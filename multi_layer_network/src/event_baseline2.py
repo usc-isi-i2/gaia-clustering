@@ -86,6 +86,7 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
                 output2.write("\n")
                 output2.write("\n")
             output2.write("\n\n\n\n")
+    '''
     with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_type2.csv", "w") as op:
         op.write("type,number\n")
         for i in stat:
@@ -100,6 +101,7 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
             op.write(",")
             op.write(str(size[i]))
             op.write("\n")
+    '''
 
 if __name__ == '__main__':
     main(sys.argv[1:])

@@ -165,6 +165,7 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file_list, path_to_ou
                 count+=1
                 if count%20000 ==0:
                     print count
+                #Hash Name URI
                 if not ( 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#hasName'\
                         in line or 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#link' in line ):
                     continue
@@ -172,10 +173,6 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file_list, path_to_ou
                 triple = r2j.parse_line_into_triple(line)
                 if triple is None:
                     continue
-                # if str(triple['predicate']) == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'\
-                #        and str(triple['object']) in entity_type_set:
-                #    TypeDict[str(triple['subject'])] = str(triple['object'])
-
                 if str(triple['predicate']) == 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#hasName'\
                         and triple['isObjectURI'] is False:
                     skosLabelDict[str(triple['subject'])] = unicode(triple['object'])
