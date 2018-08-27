@@ -11,9 +11,9 @@ predicate_string = unicode("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate
 cluster_string = unicode("http://www.isi.edu/aida/interchangeOntology#ClusterMembership")
 clu_string = unicode("http://www.isi.edu/aida/interchangeOntology#cluster")
 men_string = unicode("http://www.isi.edu/aida/interchangeOntology#clusterMember")
-path_to_KB_files = ["/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.nt",
-                    "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/ru_2.nt",
-                    "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/uk_2.nt"
+path_to_KB_files = ["/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.nt"#,
+                    #"/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/ru_2.nt",
+                    #"/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/uk_2.nt"
                     ]
 
 entity2cluster_list = []
@@ -41,6 +41,6 @@ for path_to_KB_file in path_to_KB_files:
     entity2type_list.append(entity2type)
 
 
-output_file = "/Users/xinhuang/Documents/isi/gaia_proj/joint_2.json"
+output_file = "/Users/xinhuang/Documents/isi/gaia_proj/en_2.json"
 
 extract_canonical_mentions_as_cluster_heads(path_to_KB_files,output_file,entity2type_list,entity2cluster_list)

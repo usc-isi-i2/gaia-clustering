@@ -10,23 +10,7 @@ import codecs
 from collections import defaultdict
 
 
-### Given RPI ColdStart input, produces the JSON file that will be used by the rest of the pipeline. ###
 
-def main(argv):
-	opts, _ = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
-
-	for opt, arg in opts:
-		if opt == '-h':
-			print('Given RPI ColdStart input, produces the JSON file that will be used by the rest of the pipeline, usage: python AIF_RPI_to_JSON.py -i <inputfile> -o <outputfile>')
-			sys.exit()
-		elif opt in ("-i", "--ifile"):
-			inputfile = arg
-		elif opt in ("-o", "--ofile"):
-			outputfile = arg
-	if '.gz' in inputfile:
-		extract_canonical_mentions_as_cluster_heads_GZIP(inputfile, outputfile)
-	else:
-		extract_canonical_mentions_as_cluster_heads(inputfile, outputfile)
 
 
 def parse_line_into_triple(line):

@@ -15,14 +15,14 @@ start = time.clock()
 
 #outputfile = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/dryrun_large//RPI_clusters_seedling_same_link_clusters_with_blocking3.jl"
 
-output_file = "/Users/xinhuang/Documents/isi/gaia_proj/joint_2.json"
-output_file2 = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/joint_2.edgelist"
+output_file = "/Users/xinhuang/Documents/isi/gaia_proj/en_2.json"
+output_file2 = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.edgelist"
 
 lel.get_links_edge_list(output_file, output_file2)
 G = nx.Graph()
 path_to_cluster_heads = output_file
 edgelist = output_file2
-outputfile = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/joint_2.jl"
+outputfile = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.jl"
 
 with open(edgelist,"r") as edges:
     G.add_nodes_from(literal_eval(edges.readline()))
