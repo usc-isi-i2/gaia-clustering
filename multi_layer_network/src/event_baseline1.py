@@ -53,7 +53,7 @@ def event_baseline_linking(path_to_events, path_to_output):
                         set_2.add(ent[0])
                     if len(set_1.intersection(set_2)) > 0:
                         common += 1
-                if common > 0:
+                if common >=0:
                     G.add_edge(id1, id2)
 
     print('Graph construction done!')

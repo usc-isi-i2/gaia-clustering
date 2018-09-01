@@ -1,11 +1,11 @@
 import sys
 sys.path.append("..")
 import src.event_baseline2 as eb2
-edgelist = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.edgelist"
-path_to_cluster_heads = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.json"
-path_to_new_cluster_head ="/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2_new.json"
-input_file = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/extracted_even_2.json"
-path_to_output = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/event_test_baseline2_2.jl"
+edgelist = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.edgelist"
+path_to_cluster_heads = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.json"
+path_to_new_cluster_head ="/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity2.json"
+input_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/event.json"
+path_to_output = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/event.jl"
 
 entity2cluster = eb2.get_resolved_entity(edgelist,path_to_cluster_heads,path_to_new_cluster_head)
 print len(entity2cluster)
