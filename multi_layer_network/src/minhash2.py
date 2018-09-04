@@ -3,9 +3,8 @@ import random
 import json
 import networkx as nx
 import jellyfish as jf
-
-from googletrans import Translator
-
+import enchant
+d = enchant.Dict("en_US")
 def getminHash(word, seed):
     random.seed(seed)
     word_dict = {}
@@ -26,7 +25,7 @@ def getminHash(word, seed):
     return len(word_dict)
 def get_blocking(path_to_cluster_heads,seed1,seed2,transDict,bn_prefix):
     blocks ={}
-    translator = Translator()
+
     cluster_heads = json.load(open(path_to_cluster_heads))
     IDs = list(cluster_heads.keys())
     count = 0
@@ -44,7 +43,7 @@ def get_blocking(path_to_cluster_heads,seed1,seed2,transDict,bn_prefix):
     return  blocks
 
 def get_blocking_prefix(path_to_cluster_heads,transDict):
-    translator  = Translator()
+
     blocks ={}
     cluster_heads = json.load(open(path_to_cluster_heads))
     IDs = list(cluster_heads.keys())
@@ -114,6 +113,8 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
                             name1 = unicode(cluster_heads[id1][0])
                             name2 = unicode(cluster_heads[id2][0])
                             score = jf.jaro_distance(name1,name2)
+                            if (name1[0].upper()!=name1[0] or name2[0].upper()!=name2[0]  or d.check(name1.lower()) or d.check(name2.lower())):
+                                continue
                             if score>0.9:
                                 G.add_edge(id1, id2)
         print sum
@@ -131,11 +132,15 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
                 id2 = block1[block][j]
                 if cluster_heads[id1][1] == cluster_heads[id2][1] and (cluster_heads[id1][2] != cluster_heads[id2][2] or "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2]):
                     if "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2] and cluster_heads[id1][1] == cluster_heads[id2][1]:
+
                         name1 = unicode(cluster_heads[id1][0])
                         name2 = unicode(cluster_heads[id2][0])
                         score = jf.jaro_distance(name1, name2)
+                        if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(name1.lower()) or d.check(name2.lower())):
+                            continue
                         if score > 0.9:
                             G.add_edge(id1, id2)
+
     with open(path_to_output, 'w') as output:
         output.write(str(G.nodes()) + '\n')
         for e in G.edges:
