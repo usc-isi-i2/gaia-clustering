@@ -1,10 +1,11 @@
 import codecs
-import AIF_RPI_to_JSON as r2j
+import src.AIF_RPI_to_JSON as r2j
 import json
+from src.gaia_namespace import AidaInterchange
 
 
 def get_cluster(path_to_KB_file, type_string, cluster_string):
-    return get_statement(path_to_KB_file, type_string, cluster_string);
+    return get_statement(path_to_KB_file, type_string, cluster_string)
 
 
 def get_entity2cluster(path_to_KB_file, clu_string, cluster_set, men_string):
@@ -132,7 +133,7 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file_list, path_to_ou
         for j in i:
             entity2cluster[j] = i[j]
     entity_type_set = set()
-    entity_type_set.add('http://darpa.mil/aida/interchangeOntology#Entity')
+    entity_type_set.add(AidaInterchange.Entity)
     skosLabelDict = dict()
     # EntitySet = set()
     LinkDict = dict()
@@ -147,7 +148,7 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file_list, path_to_ou
     for path_to_KB_file in path_to_KB_file_list:
         with codecs.open(path_to_KB_file, 'r', 'utf-8') as f:
             for line in f:
-                if 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#linkTarget' not in line:
+                if AidaInterchange.linkTarget.toPython() not in line:
                     continue
                 else:
                     triple = r2j.parse_line_into_triple(line)
@@ -161,20 +162,16 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file_list, path_to_ou
                 if count % 20000 == 0:
                     print(count)
                     # Hash Name URI
-                if not ('https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#hasName' \
-                        in line or 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#link' in line):
+                if not (AidaInterchange.hasName.toPython() in line or AidaInterchange.link.toPython() in line):
                     continue
                 # print 'yes'
                 triple = r2j.parse_line_into_triple(line)
                 if triple is None:
                     continue
-                if str(triple[
-                           'predicate']) == 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#hasName' \
-                        and triple['isObjectURI'] is False:
+                if str(triple['predicate']) == AidaInterchange.hasName.toPython() and triple['isObjectURI'] is False:
                     skosLabelDict[str(triple['subject'])] = str(triple['object'])
 
-                if str(triple[
-                           'predicate']) == 'https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#link':
+                if str(triple['predicate']) == AidaInterchange.link:
                     LinkDict[str(triple['subject'])] = LinkTargetDict[str(triple['object'])]
 
     count = 0

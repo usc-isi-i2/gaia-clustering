@@ -6,6 +6,9 @@ import gzip
 from rdflib import Graph
 from rdflib.term import Literal, URIRef, BNode
 import codecs
+from rdflib.namespace import RDF, SKOS
+from rdflib.plugins.stores.sparqlstore import SPARQLStore
+from src.gaia_namespace import AidaInterchange
 
 from collections import defaultdict
 
@@ -40,7 +43,7 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file, path_to_output,
     :return:
     """
     entity_type_set = set()
-    entity_type_set.add('http://darpa.mil/aida/interchangeOntology#Entity')
+    entity_type_set.add(AidaInterchange.Entity)
     skosLabelDict = dict()
     # EntitySet = set()
     LinkDict = dict()
@@ -51,7 +54,7 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file, path_to_output,
     # pass 1
     with codecs.open(path_to_KB_file, 'r', 'utf-8') as f:
         for line in f:
-            if 'http://darpa.mil/aida/interchangeOntology#linkTarget' not in line:
+            if AidaInterchange.linkTarget.toPython not in line:
                 continue
             else:
                 triple = parse_line_into_triple(line)
@@ -61,21 +64,17 @@ def extract_canonical_mentions_as_cluster_heads(path_to_KB_file, path_to_output,
     # pass 2
     with codecs.open(path_to_KB_file, 'r', 'utf-8') as f:
         for line in f:
-            if not (
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' in line or 'http://www.w3.org/2004/02/skos/core#prefLabel' \
-                    in line or 'http://darpa.mil/aida/interchangeOntology#link' in line):
+            if not (RDF.type.toPython() in line or SKOS.prefLabel.toPython() in line or AidaInterchange.link.toPython() in line):
                 continue
             # print 'yes'
             triple = parse_line_into_triple(line)
             if triple is None:
                 continue
-            if str(triple['predicate']) == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' \
-                    and str(triple['object']) in entity_type_set:
+            if str(triple['predicate']) == RDF.type and str(triple['object']) in entity_type_set:
                 TypeDict[str(triple['subject'])] = str(triple['object'])
-            if str(triple['predicate']) == 'http://www.w3.org/2004/02/skos/core#prefLabel' \
-                    and triple['isObjectURI'] is False:
+            if str(triple['predicate']) == SKOS.prefLabel and triple['isObjectURI'] is False:
                 skosLabelDict[str(triple['subject'])] = str(triple['object'])
-            if str(triple['predicate']) == 'http://darpa.mil/aida/interchangeOntology#link':
+            if str(triple['predicate']) == AidaInterchange.link:
                 LinkDict[str(triple['subject'])] = LinkTargetDict[str(triple['object'])]
 
     count = 0
