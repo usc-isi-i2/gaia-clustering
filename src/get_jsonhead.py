@@ -56,19 +56,21 @@ def load_event(entity_json=None):
         for t in ENTITY_TYPE:
             event_json[evt_uri][t] = []
         q_ent = '''
-        SELECT DISTINCT ?ent
+        SELECT DISTINCT ?ent ?ent_name
         WHERE {
         ?r a rdf:Statement ;
            rdf:subject <%s> ;
            rdf:predicate ?p ;
            rdf:object ?ent .
-        ?ent a aida:Entity .
+        ?ent a aida:Entity ;
+             aida:hasName ?ent_name .
         }
         ''' % evt_uri
         for record in select(q_ent):
             ent = record['ent']['value']
+            ent_name = record['ent_name']['value']
             ent_type = entity_json[ent][1] if entity_json else select(query_type_sparql(ent))[0]['t']['value']
-            event_json[evt_uri][ent_type].append(ent)
+            event_json[evt_uri][ent_type].append([ent, ent_name])
         cnt += 1
         if cnt % 200 == 0:
             print('   %d of %d' % (cnt, total))

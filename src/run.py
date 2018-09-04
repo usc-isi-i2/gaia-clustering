@@ -8,8 +8,8 @@ from utils import dump_json
 entity_jsonhead = load_entity()
 event_jsonhead = load_event(entity_jsonhead)
 
-dump_json(entity_jsonhead, '../outputs/entity.json')
-dump_json(event_jsonhead, '../outputs/event.json')
+dump_json(entity_jsonhead, '../outputs/entity0901.json')
+dump_json(event_jsonhead, '../outputs/event0901.json')
 
 # run_from_jsonhead(input_file='/Users/dongyuli/isi/repos/gaia-clustering/outputs/entity.json',
 #                   output_file='/Users/dongyuli/isi/repos/gaia-clustering/outputs/entity_cluster.jl'

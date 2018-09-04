@@ -1,7 +1,7 @@
 from SPARQLWrapper import SPARQLWrapper
 import json, os
 
-ENDPOINT = 'http://gaiadev01.isi.edu:3030/rpi0826aif0830/query'
+ENDPOINT = 'http://gaiadev01.isi.edu:3030/rpi0901aida9979/query'
 PREFIX = '''
 PREFIX aida: <https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -15,7 +15,9 @@ ENTITY_TYPE = [
     ldcOnt + "Person",
     ldcOnt + "GeopoliticalEntity",
     ldcOnt + "Location",
-    ldcOnt + "Facility"
+    ldcOnt + "Facility",
+    ldcOnt + "Weapon",
+    ldcOnt + "Vehicle"
 ]
 
 sw = SPARQLWrapper(ENDPOINT)
