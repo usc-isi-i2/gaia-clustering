@@ -1,7 +1,43 @@
-from utils import *
+from SPARQLWrapper import SPARQLWrapper
+import json, os
 
 
-def load_entity():
+PREFIX = '''
+PREFIX aida: <https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX xij: <http://isi.edu/xij-rule-set#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ldcOnt: <https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#>
+'''
+ldcOnt = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#"
+ENTITY_TYPE = [
+    ldcOnt + "Organization",
+    ldcOnt + "Person",
+    ldcOnt + "GeopoliticalEntity",
+    ldcOnt + "Location",
+    ldcOnt + "Facility",
+    ldcOnt + "Weapon",
+    ldcOnt + "Vehicle"
+]
+
+
+def query_type_sparql(uri):
+    return 'SELECT ?t WHERE {?r a rdf:Statement; rdf:subject <%s>; rdf:predicate rdf:type; rdf:object ?t}' % uri
+
+
+def select(query_str, endpoint):
+    sw = SPARQLWrapper(endpoint.rstrip('/') + '/query')
+    sw.setQuery(PREFIX + query_str)
+    sw.setReturnFormat('json')
+    return sw.query().convert()['results']['bindings']
+
+
+def dump_json(json_dict, file_path):
+    with open(os.path.join(os.path.dirname(__file__), file_path), 'w') as f:
+        json.dump(json_dict, f, indent=2)
+
+
+def load_entity(endpoint):
     entity_json = {}
     q = '''
     SELECT ?e (MAX(?label) as ?name) ?type ?linkTarget
@@ -17,12 +53,12 @@ def load_entity():
         ?link aida:linkTarget ?linkTarget .
     } GROUPBY ?e ?type ?linkTarget
     '''
-    for x in select(q):
+    for x in select(q, endpoint):
         entity_json[x['e']['value']] = [x['name']['value'], x['type']['value'], x['linkTarget']['value']]
     return entity_json
 
 
-def load_event(entity_json=None):
+def load_event(entity_json, endpoint):
     event_json = {}
     q = '''
     SELECT distinct ?e ?type ?doc
@@ -36,7 +72,7 @@ def load_event(entity_json=None):
            rdf:object ?type .
     } 
     '''
-    bindings = select(q)
+    bindings = select(q, endpoint)
     cnt = 0
     total = len(bindings)
     for x in bindings:
@@ -51,7 +87,7 @@ def load_event(entity_json=None):
           ?j skos:prefLabel ?text .
         }
         ''' % evt_uri
-        event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text)]
+        event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text, endpoint)]
 
         for t in ENTITY_TYPE:
             event_json[evt_uri][t] = []
@@ -66,10 +102,10 @@ def load_event(entity_json=None):
              aida:hasName ?ent_name .
         }
         ''' % evt_uri
-        for record in select(q_ent):
+        for record in select(q_ent, endpoint):
             ent = record['ent']['value']
             ent_name = record['ent_name']['value']
-            ent_type = entity_json[ent][1] if entity_json else select(query_type_sparql(ent))[0]['t']['value']
+            ent_type = entity_json[ent][1] if entity_json else select(query_type_sparql(ent), endpoint)[0]['t']['value']
             event_json[evt_uri][ent_type].append([ent, ent_name])
         cnt += 1
         if cnt % 200 == 0:

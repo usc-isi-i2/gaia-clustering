@@ -1,11 +1,15 @@
-import sys
-sys.path.append("..")
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
 import src.event_baseline2 as eb2
-edgelist = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.edgelist"
-path_to_cluster_heads = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.json"
-path_to_new_cluster_head ="/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity2.json"
-input_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/event.json"
-path_to_output = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/event.jl"
+
+# outputs_prefix = '/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/'
+outputs_prefix = '/Users/dongyuli/isi/repos/gaia-clustering/outputs/' if len(sys.argv) < 2 else (sys.argv[1].rstrip('/') + '/')
+
+edgelist = outputs_prefix + "entity.edgelist"
+path_to_cluster_heads = outputs_prefix + "entity.json"
+path_to_new_cluster_head = outputs_prefix + "entity2.json"
+input_file = outputs_prefix + "event.json"
+path_to_output = outputs_prefix + "event.jl"
 
 entity2cluster = eb2.get_resolved_entity(edgelist,path_to_cluster_heads,path_to_new_cluster_head)
 print len(entity2cluster)

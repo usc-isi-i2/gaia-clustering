@@ -1,5 +1,5 @@
-import sys
-sys.path.append("..")
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), ".."))
 import src.minhash2 as lel
 import networkx as nx
 import json
@@ -9,15 +9,17 @@ import time
 
 start = time.clock()
 
+# outputs_prefix = '/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/'
+outputs_prefix = '/Users/dongyuli/isi/repos/gaia-clustering/outputs/' if len(sys.argv) < 2 else (sys.argv[1].rstrip('/') + '/')
 
-intput_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.json"
-output_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.edgelist"
+input_file = outputs_prefix + 'entity.json'
+output_file = outputs_prefix + 'entity.edgelist'
 
-lel.get_links_edge_list(intput_file, output_file)
+lel.get_links_edge_list(input_file, output_file)
 G = nx.Graph()
-path_to_cluster_heads = intput_file
+path_to_cluster_heads = input_file
 edgelist = output_file
-outputfile = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.jl"
+outputfile = outputs_prefix + "entity.jl"
 
 with open(edgelist,"r") as edges:
     G.add_nodes_from(literal_eval(edges.readline()))
