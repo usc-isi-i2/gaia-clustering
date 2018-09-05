@@ -1,4 +1,5 @@
 import os
+import sys
 import multi_layer_network.src.minhash2 as lel
 import networkx as nx
 import json
@@ -7,15 +8,16 @@ import time
 
 start = time.clock()
 
-output_dir = os.path.join(os.path.dirname(__file__), '../../outputs')
-intput_file = output_dir + '/entity.json'
-output_file = output_dir + 'entity.edgelist'
+outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (sys.argv[1].rstrip('/') + '/')
 
-lel.get_links_edge_list(intput_file, output_file)
+input_file = outputs_prefix + 'entity.json'
+output_file = outputs_prefix + 'entity.edgelist'
+
+lel.get_links_edge_list(input_file, output_file)
 G = nx.Graph()
-path_to_cluster_heads = intput_file
+path_to_cluster_heads = input_file
 edgelist = output_file
-outputfile = output_dir + '/entity.jl'
+outputfile = outputs_prefix + "entity.jl"
 
 with open(edgelist, "r") as edges:
     G.add_nodes_from(literal_eval(edges.readline()))

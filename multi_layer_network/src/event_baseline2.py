@@ -48,9 +48,15 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
                     set_1 = set()
                     set_2 = set()
                     for ent in events[id1][t]:
-                        set_1.add(entity2cluster[ent])
+                        if isinstance(ent, list):
+                            set_1.add(entity2cluster[ent[0]])
+                        else:
+                            set_1.add(entity2cluster[ent])
                     for ent in events[id2][t]:
-                        set_2.add(entity2cluster[ent])
+                        if isinstance(ent, list):
+                            set_2.add(entity2cluster[ent[0]])
+                        else:
+                            set_2.add(entity2cluster[ent])
                     if len(set_1.intersection(set_2))>0:
                         common+=1
                 if common>1:
@@ -68,38 +74,38 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
     cc = nx.connected_components(G)
     stat = {}
     size = {}
-    with open(path_to_output+"des", 'w') as output2:
-        for c in cc:
-            if len(c) not in size:
-                size[len(c)] = 0
-            size[len(c)] +=1
-            check = True
-            for i in c:
-                if check:
-                    type = str(events[i]["type"])
-                    if type not in stat:
-                        stat[type] = 0
-                    stat[type] +=1
-                    check = False
-                output2.write(i+":")
-                output2.write(str(events[i]))
-                output2.write("\n")
-                output2.write("\n")
-            output2.write("\n\n\n\n")
-    with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_type2.csv", "w") as op:
-        op.write("type,number\n")
-        for i in stat:
-            op.write(i.split("#")[-1])
-            op.write(",")
-            op.write(str(stat[i]))
-            op.write("\n")
-    with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_size2.csv", "w") as op:
-        op.write("size,number\n")
-        for i in size:
-            op.write(str(i))
-            op.write(",")
-            op.write(str(size[i]))
-            op.write("\n")
+    # with open(path_to_output+"des", 'w') as output2:
+    #     for c in cc:
+    #         if len(c) not in size:
+    #             size[len(c)] = 0
+    #         size[len(c)] +=1
+    #         check = True
+    #         for i in c:
+    #             if check:
+    #                 type = str(events[i]["type"])
+    #                 if type not in stat:
+    #                     stat[type] = 0
+    #                 stat[type] +=1
+    #                 check = False
+    #             output2.write(i+":")
+    #             output2.write(str(events[i]))
+    #             output2.write("\n")
+    #             output2.write("\n")
+    #         output2.write("\n\n\n\n")
+    # with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_type2.csv", "w") as op:
+    #     op.write("type,number\n")
+    #     for i in stat:
+    #         op.write(i.split("#")[-1])
+    #         op.write(",")
+    #         op.write(str(stat[i]))
+    #         op.write("\n")
+    # with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_size2.csv", "w") as op:
+    #     op.write("size,number\n")
+    #     for i in size:
+    #         op.write(str(i))
+    #         op.write(",")
+    #         op.write(str(size[i]))
+    #         op.write("\n")
 
 if __name__ == '__main__':
     main(sys.argv[1:])
@@ -128,4 +134,3 @@ def get_resolved_entity(edgelist,path_to_cluster_heads,path_to_new_cluster_head)
     with open(path_to_new_cluster_head, 'w') as output:
         json.dump(cluster_heads, output)
     return entity2clusters
-
