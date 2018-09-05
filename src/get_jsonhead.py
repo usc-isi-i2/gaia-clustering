@@ -1,5 +1,6 @@
 from SPARQLWrapper import SPARQLWrapper
-import json, os
+import json
+import os
 
 
 PREFIX = '''
