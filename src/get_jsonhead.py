@@ -1,26 +1,14 @@
 from SPARQLWrapper import SPARQLWrapper
 import json
 import os
+from src.gaia_namespace import ENTITY_TYPE_STR
 
 
 PREFIX = '''
 PREFIX aida: <https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX xij: <http://isi.edu/xij-rule-set#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ldcOnt: <https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#>
 '''
-ldcOnt = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#"
-ENTITY_TYPE = [
-    ldcOnt + "Organization",
-    ldcOnt + "Person",
-    ldcOnt + "GeopoliticalEntity",
-    ldcOnt + "Location",
-    ldcOnt + "Facility",
-    ldcOnt + "Weapon",
-    ldcOnt + "Vehicle"
-]
-
 
 def query_type_sparql(uri):
     return 'SELECT ?t WHERE {?r a rdf:Statement; rdf:subject <%s>; rdf:predicate rdf:type; rdf:object ?t}' % uri
@@ -90,7 +78,7 @@ def load_event(entity_json, endpoint):
         ''' % evt_uri
         event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text, endpoint)]
 
-        for t in ENTITY_TYPE:
+        for t in ENTITY_TYPE_STR:
             event_json[evt_uri][t] = []
         q_ent = '''
         SELECT DISTINCT ?ent ?ent_name

@@ -3,6 +3,7 @@ import json
 import getopt
 import networkx as nx
 from ast import literal_eval
+from src.gaia_namespace import ENTITY_TYPE_STR
 
 def main(argv):
     opts, _ = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
@@ -28,27 +29,20 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
 
     G = nx.Graph()
     G.add_nodes_from(IDs)
-    geo_str = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#GeopoliticalEntity"
-    fil_str = "http://darpa.mil/ontologies/SeedlingOntology#FillerType"
-    per_str = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#Person"
-    org_str = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#Organization"
-    fac_str = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#Facility"
-    loc_str = "https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#Location"
-    entity_type = [geo_str, per_str, org_str, fac_str, loc_str]
     for i, id1 in enumerate(IDs):
         for j in range(i + 1, len(IDs)):
             id2 = IDs[j]
             if events[id1]['type'] == events[id2]['type']:
                 common = 0
-                for t in entity_type:
+                for t in ENTITY_TYPE_STR:
                     set_1 = set()
                     set_2 = set()
-                    for ent in events[id1][t]:
+                    for ent in events[id1].get(t, list()):
                         if isinstance(ent, list):
                             set_1.add(entity2cluster[ent[0]])
                         else:
                             set_1.add(entity2cluster[ent])
-                    for ent in events[id2][t]:
+                    for ent in events[id2].get(t, list()):
                         if isinstance(ent, list):
                             set_2.add(entity2cluster[ent[0]])
                         else:
