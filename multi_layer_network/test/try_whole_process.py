@@ -1,6 +1,5 @@
 import sys
 sys.path.append("..")
-import  src.AIF_RPI_to_JSON as rtj
 import src.links_edge_list_with_nil as lel
 import getopt
 import networkx as nx

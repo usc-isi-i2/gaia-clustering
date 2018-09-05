@@ -1,6 +1,5 @@
 import sys
 sys.path.append("..")
-import  src.AIF_RPI_to_JSON as rtj
 import src.minhash2 as lel
 import getopt
 import networkx as nx
