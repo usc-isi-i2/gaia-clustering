@@ -1,12 +1,16 @@
 import sys
-sys.path.append("..")
-import src.event_baseline2 as eb2
-edgelist = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.edgelist"
-path_to_cluster_heads = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2.json"
-path_to_new_cluster_head ="/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/en_2_new.json"
-input_file = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/extracted_even_2.json"
-path_to_output = "/Users/xinhuang/Documents/isi/gaia_proj/ta1/rpi/rpi_dryrun_background_non_eval_result_v0.1/event_test_baseline2_2.jl"
+import os
+import multi_layer_network.src.event_baseline2 as eb2
 
-entity2cluster = eb2.get_resolved_entity(edgelist,path_to_cluster_heads,path_to_new_cluster_head)
-print len(entity2cluster)
-eb2.event_baseline_linking(input_file, path_to_output,entity2cluster)
+outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (
+            sys.argv[1].rstrip('/') + '/')
+
+edgelist = outputs_prefix + "entity.edgelist"
+path_to_cluster_heads = outputs_prefix + "entity.json"
+path_to_new_cluster_head = outputs_prefix + "entity2.json"
+input_file = outputs_prefix + "event.json"
+path_to_output = outputs_prefix + "event.jl"
+
+entity2cluster = eb2.get_resolved_entity(edgelist, path_to_cluster_heads, path_to_new_cluster_head)
+print(len(entity2cluster))
+eb2.event_baseline_linking(input_file, path_to_output, entity2cluster)

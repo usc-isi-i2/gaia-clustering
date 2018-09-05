@@ -2,20 +2,20 @@ import re
 import sys
 import json
 import getopt
-import collections
-
-from datetime import datetime
 from collections import defaultdict
 
 
-### Given RPI ColdStart input, the Entity strings JSON file, and the String strings JSON file, produces the events JSON file. ###
+# Given RPI ColdStart input, the Entity strings JSON file, and the String strings JSON file,
+# produces the events JSON file.
 
 def main(argv):
-    opts, _ = getopt.getopt(argv,"hi:e:s:o:",["ifile=","efile=","sfile=","ofile="])
+    opts, _ = getopt.getopt(argv, "hi:e:s:o:", ["ifile=", "efile=", "sfile=", "ofile="])
 
     for opt, arg in opts:
         if opt == '-h':
-            print('Given RPI ColdStart input, the Entity strings JSON file, and the String strings JSON file, produces the events JSON file, usage: python extract_events.py -i <inputfile> -e <entitystringsfile> -s <stringstringsfile> -o <outputfile>')
+            print('Given RPI ColdStart input, the Entity strings JSON file, and the String strings JSON file, produces '
+                  'the events JSON file, usage: python extract_events.py -i <inputfile> -e <entitystringsfile> '
+                  '-s <stringstringsfile> -o <outputfile>')
             sys.exit()
         elif opt in ("-i", "--ifile"):
             inputfile = arg
@@ -26,8 +26,8 @@ def main(argv):
         elif opt in ("-o", "--ofile"):
             outputfile = arg
 
-
     extract_events(inputfile, outputfile, entity_strings, string_strings)
+
 
 def extract_events(path_to_KB_file, path_to_output, path_to_entity_strings, path_to_string_strings, excep):
     entity_strings = json.load(open(path_to_entity_strings))
@@ -40,9 +40,9 @@ def extract_events(path_to_KB_file, path_to_output, path_to_entity_strings, path
     with open(path_to_KB_file) as KB:
         count = 0
         for line in KB:
-            count+=1
-            if count%2000000 ==0:
-                print count
+            count += 1
+            if count % 2000000 == 0:
+                print(count)
             fields = re.split('\t', line)
             if len(fields) < 2: continue
             if fields[1] == 'type':
@@ -52,12 +52,14 @@ def extract_events(path_to_KB_file, path_to_output, path_to_entity_strings, path
         count = 0
         for line in KB:
             fields = re.split('\t', line)
-            if len(fields) < 2: continue
+            if len(fields) < 2:
+                continue
             if 'mention' in fields[1]:
-                if fields[0][1:6] != 'Event': continue
-                if (len(events)>10000):
+                if fields[0][1:6] != 'Event':
                     continue
-                print line
+                if len(events) > 10000:
+                    continue
+                print(line)
                 # type
                 events[fields[0][1:] + ':' + fields[3]]['type'] = type_look_up_table[fields[0]]
 
@@ -86,20 +88,21 @@ def extract_events(path_to_KB_file, path_to_output, path_to_entity_strings, path
 
             # finding entities #
             elif fields[2].startswith(':Entity'):
-                if fields[0][1:6] != 'Event': continue
+                if fields[0][1:6] != 'Event':
+                    continue
                 count += 1
                 if count % 20000 == 0:
-                    print count
+                    print(count)
                 for event in events:
                     if event.startswith(fields[0][1:]):
                         if fields[2] in entity_strings:
-                            print fields[2]
-                            print event
-                            print ""
+                            print(fields[2])
+                            print(event)
+                            print('')
                             entity_type = entity_strings[fields[2]]['type'] + '_entities'
                             events[event][entity_type].append(entity_strings[fields[2]]['selected_string'])
                         else:
-                            unabletofind.append((event,fields[2]))
+                            unabletofind.append((event, fields[2]))
             '''
             elif fields[2].startswith(':String'):
                 if fields[0][1:6] != 'Event': continue
@@ -110,6 +113,7 @@ def extract_events(path_to_KB_file, path_to_output, path_to_entity_strings, path
             '''
     with open(path_to_output, 'w') as output:
         json.dump(events, output)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
