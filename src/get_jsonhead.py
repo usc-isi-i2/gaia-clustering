@@ -1,7 +1,7 @@
 from SPARQLWrapper import SPARQLWrapper
 import json
 import os
-from src.gaia_namespace import ENTITY_TYPE_STR
+from gaia_namespace import ENTITY_TYPE_STR
 
 
 PREFIX = '''
@@ -101,4 +101,55 @@ def load_event(entity_json, endpoint):
             print('   %d of %d' % (cnt, total))
     print(' - load event done')
     return event_json
+
+# after upload entity clusters:
+# TODO: add into script
+def generate_relation_jl(endpoint, output):
+    groups = {}
+    q = '''
+    SELECT distinct ?e ?type
+    WHERE {
+        ?e a aida:Relation .
+        ?r a rdf:Statement ;
+           rdf:subject ?e ;
+           rdf:predicate rdf:type ;
+           rdf:object ?type .
+    } 
+    '''
+    bindings = select(q, endpoint)
+    cnt = 0
+    total = len(bindings)
+    for x in bindings:
+        rel_uri = x['e']['value']
+        links = []
+        q_link = '''
+        SELECT DISTINCT ?p ?cluster
+        WHERE {
+        ?r a rdf:Statement ;
+           rdf:subject <%s> ;
+           rdf:predicate ?p ;
+           rdf:object ?ent .
+        ?mem aida:cluster ?cluster ;
+            aida:clusterMember ?ent .
+        }
+        ''' % rel_uri
+        for record in select(q_link, endpoint):
+            pred = record['p']['value']
+            cluster = record['cluster']['value']
+            links.append((pred.rsplit('#', 1)[-1], cluster.rsplit('#', 1)[-1]))
+        attr = x['type']['value'].rsplit('#', 1)[-1] + str(sorted(links))
+        if attr not in groups:
+            groups[attr] = []
+        groups[attr].append(rel_uri)
+        cnt += 1
+        if cnt % 200 == 0:
+            print('   %d of %d' % (cnt, total))
+    jl = []
+    for v in groups.values():
+        jl.append({'relations': v})
+    with open(output.rstrip('/') + 'relation.jl', 'w') as f:
+        for j in jl:
+            json.dump(j, f)
+            f.write('\n')
+
 
