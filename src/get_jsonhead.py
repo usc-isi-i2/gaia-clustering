@@ -51,7 +51,7 @@ def load_entity_image(endpoint):
 def load_entity(endpoint):
     entity_json = {}
     q = '''
-    SELECT ?e ?name ?type ?linkTarget
+    SELECT DISTINCT ?e ?name ?translate ?type ?linkTarget
     WHERE {
         ?e a aida:Entity ;
            aida:hasName ?name ;
@@ -61,10 +61,21 @@ def load_entity(endpoint):
             rdf:subject ?e ;
             rdf:predicate rdf:type ;
             rdf:object ?type .
-    }
+        OPTIONAL {
+            ?e aida:justifiedBy ?j .
+            ?j skos:prefLabel ?name ;
+                aida:privateData ?pd .
+            ?pd aida:jsonContent ?translate ;
+                aida:system <http://www.rpi.edu/EDL_Translation>
+        }
+    } 
     '''
     for x in select(q, endpoint):
-        entity_json[x['e']['value']] = [x['name']['value'], x['type']['value'], x['linkTarget']['value']]
+        try:
+            trans_name = json.loads(x['translate']['value'])[0]
+            entity_json[x['e']['value']] = [trans_name, x['type']['value'], x['linkTarget']['value']]
+        except Exception:
+            entity_json[x['e']['value']] = [x['name']['value'], x['type']['value'], x['linkTarget']['value']]
     return entity_json
 
 
@@ -90,35 +101,42 @@ def load_event(entity_json, endpoint):
         evt_uri = x['e']['value']
         event_json[evt_uri] = {'type': x['type']['value'], 'doc': x['doc']['value']}
         q_text = '''
-        SELECT DISTINCT ?text
+        SELECT DISTINCT ?text ?translate
         WHERE {
           <%s> a aida:Event ;
                aida:justifiedBy ?j .
           ?j skos:prefLabel ?text .
+            OPTIONAL {
+                ?j aida:privateData ?pd .
+                ?pd aida:jsonContent ?translate ;
+                    aida:system <http://www.rpi.edu/EDL_Translation>
+            }
         }
         ''' % evt_uri
-        event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text, endpoint)]
+        try:
+            event_json[evt_uri]['text'] = [json.loads(record['translate']['value'])[0] for record in select(q_text, endpoint)]
+        except Exception:
+            event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text, endpoint)]
 
         for t in ENTITY_TYPE_STR:
             event_json[evt_uri][t] = []
         q_ent = '''
-        SELECT DISTINCT ?ent ?ent_name
+        SELECT DISTINCT ?ent 
         WHERE {
         ?r a rdf:Statement ;
            rdf:subject <%s> ;
            rdf:predicate ?p ;
            rdf:object ?ent .
-        ?ent a aida:Entity ;
-             aida:hasName ?ent_name .
+        ?ent a aida:Entity .
         }
         ''' % evt_uri
         for record in select(q_ent, endpoint):
             ent = record['ent']['value']
-            ent_name = record['ent_name']['value']
-            ent_type = entity_json[ent][1] if entity_json else select(query_type_sparql(ent), endpoint)[0]['t']['value']
+            ent_name = entity_json[ent][0]
+            ent_type = entity_json[ent][1] # if entity_json else select(query_type_sparql(ent), endpoint)[0]['t']['value']
             event_json[evt_uri][ent_type].append([ent, ent_name])
         cnt += 1
-        if cnt % 200 == 0:
+        if cnt % 1000 == 0:
             print('   %d of %d' % (cnt, total))
     print(' - load event done')
     return event_json
