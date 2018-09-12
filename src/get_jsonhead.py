@@ -26,21 +26,42 @@ def dump_json(json_dict, file_path):
         json.dump(json_dict, f, indent=2)
 
 
-def load_entity(endpoint):
+def load_entity_image(endpoint):
     entity_json = {}
     q = '''
-    SELECT ?e (MAX(?label) as ?name) ?type ?linkTarget
+    SELECT ?e ?cluster ?type ?linkTarget
     WHERE {
         ?e a aida:Entity.
-        ?e aida:justifiedBy ?j.
-        ?j skos:prefLabel ?label .
+        ?x aida:cluster ?cluster ;
+           aida:clusterMember ?e .
         ?r a rdf:Statement ;
             rdf:subject ?e ;
             rdf:predicate rdf:type ;
             rdf:object ?type .
-        ?e aida:link ?link .
+    }
+    '''
+    for x in select(q, endpoint):
+        name = x['cluster']['value'].rsplit('/', 1)[-1]
+        if name.isdigit():
+            name = ''
+        entity_json[x['e']['value']] = [name, x['type']['value'], '']
+    return entity_json
+
+
+def load_entity(endpoint):
+    entity_json = {}
+    q = '''
+    SELECT ?e ?name ?type ?linkTarget
+    WHERE {
+        ?e a aida:Entity ;
+           aida:hasName ?name ;
+           aida:link ?link .
         ?link aida:linkTarget ?linkTarget .
-    } GROUPBY ?e ?type ?linkTarget
+        ?r a rdf:Statement ;
+            rdf:subject ?e ;
+            rdf:predicate rdf:type ;
+            rdf:object ?type .
+    }
     '''
     for x in select(q, endpoint):
         entity_json[x['e']['value']] = [x['name']['value'], x['type']['value'], x['linkTarget']['value']]
@@ -147,9 +168,8 @@ def generate_relation_jl(endpoint, output):
     jl = []
     for v in groups.values():
         jl.append({'relations': v})
-    with open(output.rstrip('/') + 'relation.jl', 'w') as f:
+    with open(output.rstrip('/') + '/relation.jl', 'w') as f:
         for j in jl:
             json.dump(j, f)
             f.write('\n')
-
 

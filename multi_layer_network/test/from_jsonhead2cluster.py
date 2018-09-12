@@ -1,5 +1,6 @@
 import os
 import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import multi_layer_network.src.minhash2 as lel
 import networkx as nx
 import json

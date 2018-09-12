@@ -1,5 +1,6 @@
 import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import multi_layer_network.src.event_baseline2 as eb2
 
 outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (
