@@ -27,29 +27,42 @@ def dump_json(json_dict, file_path):
 
 
 def load_entity_image(endpoint):
+    import random, string
     entity_json = {}
     q = '''
-    SELECT ?e ?cluster ?type ?linkTarget
+    SELECT DISTINCT ?e ?type ?cluster ?linkTarget
     WHERE {
-        ?e a aida:Entity.
-        ?x aida:cluster ?cluster ;
-           aida:clusterMember ?e .
+        ?e a aida:Entity ;
+           aida:system ?s .
+        filter(?s != <http://www.rpi.edu>) 
         ?r a rdf:Statement ;
             rdf:subject ?e ;
             rdf:predicate rdf:type ;
             rdf:object ?type .
-    }
+        OPTIONAL {
+            ?mem aida:cluster ?cluster ;
+                 aida:clusterMember ?e .
+            OPTIONAL {
+                ?cluster aida:prototype ?proto .
+                ?proto aida:hasName ?name ;
+                   aida:link ?link .
+                ?link aida:linkTarget ?linkTarget .
+            }
+        }
+    } 
     '''
+
     for x in select(q, endpoint):
-        name = x['cluster']['value'].rsplit('/', 1)[-1]
+        name = x.get('cluster', {}).get('value', '').rslip('/', 1)[-1]
         if name.isdigit():
             name = ''
-        entity_json[x['e']['value']] = [name, x['type']['value'], '']
+        link = x.get('linkTarget', {}).get('value') or ''.join([random.choice(string.ascii_letters + string.digits) for _ in range(32)])
+        entity_json[x['e']['value']] = [name, x['type']['value'], link]
     return entity_json
 
 
 def load_entity(endpoint):
-    entity_json = {}
+    entity_json = load_entity_image(endpoint)
     q = '''
     SELECT DISTINCT ?e ?name ?translate ?type ?linkTarget
     WHERE {
@@ -116,7 +129,7 @@ def load_event(entity_json, endpoint):
         event_json[evt_uri]['text'] = []
         for record in select(q_text, endpoint):
             try:
-                cur = record['translate']['value'])[0]
+                cur = json.loads(x['translate']['value'])[0]
             except Exception:
                 cur = record['text']['value']
             event_json[evt_uri]['text'].append(cur)
@@ -193,4 +206,6 @@ def generate_relation_jl(endpoint, output):
         for j in jl:
             json.dump(j, f)
             f.write('\n')
+
+
 
