@@ -58,7 +58,29 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
             answer['events'] = list(c)
             json.dump(answer, output)
             output.write("\n")
-
+    cc = nx.connected_components(G)
+    stat = {}
+    size = {}
+    with open(path_to_output+"des", 'w') as output2:
+        for c in cc:
+            if len(c) not in size:
+                size[len(c)] = 0
+            size[len(c)] +=1
+            check = True
+            if len(c) == 1:
+                continue
+            for i in c:
+                if check:
+                    type = str(events[i]["type"])
+                    if type not in stat:
+                        stat[type] = 0
+                    stat[type] +=1
+                    check = False
+                output2.write(i+":")
+                output2.write(str(events[i]))
+                output2.write("\n")
+                output2.write("\n")
+            output2.write("\n\n\n\n")
 
 
 
