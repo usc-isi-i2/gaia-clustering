@@ -23,6 +23,12 @@ def main(argv):
 
     event_baseline_linking(inputfile, outputfile)
 
+def jaccard_similarity(list1, list2):
+    intersection = len((set(list1).intersection(set(list2))))
+    union = (len(list1) + len(list2)) - intersection
+    if union == 0:
+        return 0
+    return float(intersection / union)
 
 def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
 
@@ -44,17 +50,17 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
             id2 = IDs[j]
             if events[id1]['type'] == events[id2]['type']:
                 common = 0
-                for t in entity_type:
-                    set_1 = set()
-                    set_2 = set()
-                    for ent in events[id1][t]:
-                        set_1.add(entity2cluster[ent])
-                    for ent in events[id2][t]:
-                        set_2.add(entity2cluster[ent])
-                    if len(set_1.intersection(set_2))>0:
-                        common+=1
-                if common>1:
+                all_entity_1 = set()
+                all_entity_2 = set()
+                for ii in entity_type:
+                    for x in events[id1][ii]:
+                        all_entity_1.add(entity2cluster[x[0]])
+                    for x in events[id2][ii]:
+                        all_entity_2.add(entity2cluster[x[0]])
+
+                if jaccard_similarity(all_entity_1, all_entity_2) >= 0.1:
                     G.add_edge(id1, id2)
+                    edge_set.append((id1, id2))
     print('Graph construction done!')
 
     cc = nx.connected_components(G)
@@ -86,20 +92,7 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
                 output2.write("\n")
                 output2.write("\n")
             output2.write("\n\n\n\n")
-    with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_type2.csv", "w") as op:
-        op.write("type,number\n")
-        for i in stat:
-            op.write(i.split("#")[-1])
-            op.write(",")
-            op.write(str(stat[i]))
-            op.write("\n")
-    with open("/Users/xinhuang/Documents/isi/gaia_proj/res/header/cluster/event_size2.csv", "w") as op:
-        op.write("size,number\n")
-        for i in size:
-            op.write(str(i))
-            op.write(",")
-            op.write(str(size[i]))
-            op.write("\n")
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
