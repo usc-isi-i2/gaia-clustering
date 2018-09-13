@@ -1,37 +1,38 @@
+import os
 import sys
-sys.path.append("..")
-import src.minhash2 as lel
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+import multi_layer_network.src.minhash2 as lel
 import networkx as nx
 import json
-import codecs
 from ast import literal_eval
 import time
 
 start = time.clock()
 
+outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (sys.argv[1].rstrip('/') + '/')
 
-intput_file = "/Users/xinhuang/Downloads/image_entity.json"
-output_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entityc.edgelist"
+input_file = outputs_prefix + 'entity.json'
+output_file = outputs_prefix + 'entity.edgelist'
 
-lel.get_links_edge_list(intput_file, output_file)
+lel.get_links_edge_list(input_file, output_file)
 G = nx.Graph()
-path_to_cluster_heads = intput_file
+path_to_cluster_heads = input_file
 edgelist = output_file
-outputfile = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entityc.jl"
+outputfile = outputs_prefix + "entity.jl"
 
-with open(edgelist,"r") as edges:
+with open(edgelist, "r") as edges:
     G.add_nodes_from(literal_eval(edges.readline()))
     for edge in edges:
         edge_nodes = literal_eval(edge)
         G.add_edge(edge_nodes[0], edge_nodes[1])
 
 cc = nx.connected_components(G)
-cluster_heads = json.load(open(path_to_cluster_heads),encoding="utf-8")
-with codecs.open(outputfile+"_with_attr", 'w',encoding="utf-8") as output:
+cluster_heads = json.load(open(path_to_cluster_heads))
+with open(outputfile + '_with_attr', 'w') as output:
     for c in cc:
         answer = dict()
-        answer['entities'] = map(lambda x:cluster_heads[x],list(c))
-        json.dump(answer, output, encoding="utf-8", ensure_ascii=False)
+        answer['entities'] = [cluster_heads[x] for x in c]
+        json.dump(answer, output)
         output.write('\n')
 
 cc = nx.connected_components(G)
@@ -39,8 +40,8 @@ with open(outputfile, 'w') as output:
     for c in cc:
         answer = dict()
         answer['entities'] = list(c)
-        json.dump(answer, output,encoding="utf-8",ensure_ascii=False)
+        json.dump(answer, output)
         output.write('\n')
 
 elapsed = (time.clock() - start)
-print("Time used:",elapsed)
+print("Time used:", elapsed)
