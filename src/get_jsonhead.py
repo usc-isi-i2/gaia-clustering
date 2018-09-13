@@ -113,10 +113,13 @@ def load_event(entity_json, endpoint):
             }
         }
         ''' % evt_uri
-        try:
-            event_json[evt_uri]['text'] = [json.loads(record['translate']['value'])[0] for record in select(q_text, endpoint)]
-        except Exception:
-            event_json[evt_uri]['text'] = [record['text']['value'] for record in select(q_text, endpoint)]
+        event_json[evt_uri]['text'] = []
+        for record in select(q_text, endpoint):
+            try:
+                cur = record['translate']['value'])[0]
+            except Exception:
+                cur = record['text']['value']
+            event_json[evt_uri]['text'].append(cur)
 
         for t in ENTITY_TYPE_STR:
             event_json[evt_uri][t] = []
