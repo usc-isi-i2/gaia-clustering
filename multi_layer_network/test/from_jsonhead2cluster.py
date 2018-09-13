@@ -10,14 +10,14 @@ import time
 start = time.clock()
 
 
-intput_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.json"
-output_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.edgelist"
+intput_file = "/Users/xinhuang/Downloads/image_entity.json"
+output_file = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entityc.edgelist"
 
 lel.get_links_edge_list(intput_file, output_file)
 G = nx.Graph()
 path_to_cluster_heads = intput_file
 edgelist = output_file
-outputfile = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entity.jl"
+outputfile = "/Users/xinhuang/Documents/isi/clustering/gaia-clustering/outputs/entityc.jl"
 
 with open(edgelist,"r") as edges:
     G.add_nodes_from(literal_eval(edges.readline()))

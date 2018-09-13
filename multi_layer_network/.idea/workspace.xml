@@ -14,8 +14,8 @@
       <file leaf-file-name="minhash2.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/minhash2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="28">
-              <caret line="122" column="21" lean-forward="true" selection-start-line="122" selection-start-column="21" selection-end-line="122" selection-end-column="21" />
+            <state relative-caret-position="570">
+              <caret line="42" column="35" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
               <folding>
                 <element signature="e#56#69#0" expanded="true" />
               </folding>
@@ -23,10 +23,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="change_type.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/change_type.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
       <file leaf-file-name="extract_event_cluster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/extract_event_cluster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="751">
+            <state relative-caret-position="773">
               <caret line="62" column="93" selection-start-line="62" selection-start-column="93" selection-end-line="62" selection-end-column="93" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
@@ -38,8 +43,8 @@
       <file leaf-file-name="baseline2.exe.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/baseline2.exe.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="90">
+              <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="89" />
             </state>
           </provider>
         </entry>
@@ -47,8 +52,8 @@
       <file leaf-file-name="event_baseline2.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/event_baseline2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16">
-              <caret line="43" column="24" lean-forward="true" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+            <state relative-caret-position="1410">
+              <caret line="94" lean-forward="true" selection-start-line="94" selection-end-line="94" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -78,8 +83,8 @@
       <file leaf-file-name="from_jsonhead2cluster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/from_jsonhead2cluster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="360">
+              <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -122,17 +127,17 @@
         <option value="$PROJECT_DIR$/src/event_baseline1.py" />
         <option value="$PROJECT_DIR$/test/baseline1_exe.py" />
         <option value="$PROJECT_DIR$/test/prepare_for_bigclam.py" />
-        <option value="$PROJECT_DIR$/test/from_jsonhead2cluster.py" />
-        <option value="$PROJECT_DIR$/src/minhash2.py" />
         <option value="$PROJECT_DIR$/test/baseline2.exe.py" />
         <option value="$PROJECT_DIR$/src/event_baseline2_store.py" />
+        <option value="$PROJECT_DIR$/test/from_jsonhead2cluster.py" />
+        <option value="$PROJECT_DIR$/src/minhash2.py" />
         <option value="$PROJECT_DIR$/src/event_baseline2.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="41" />
-    <option name="y" value="29" />
+    <option name="x" value="-181" />
+    <option name="y" value="23" />
     <option name="width" value="1540" />
     <option name="height" value="924" />
   </component>
@@ -200,7 +205,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.baseline2.exe">
+  <component name="RunManager" selected="Python.from_jsonhead2cluster">
     <configuration name="baseline1_exe" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="multi_layer_network" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -281,8 +286,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.baseline2.exe" />
         <item itemvalue="Python.from_jsonhead2cluster" />
+        <item itemvalue="Python.baseline2.exe" />
         <item itemvalue="Python.baseline1_exe" />
         <item itemvalue="Python.change_type_multifile" />
       </list>
@@ -302,12 +307,13 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="41" y="29" width="1540" height="924" extended-state="0" />
+    <frame x="-181" y="23" width="1540" height="924" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22727273" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22727273" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32941177" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32941177" />
       <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -356,9 +362,6 @@
     <entry file="file://$PROJECT_DIR$/src/RPI_to_JSON.py" />
     <entry file="file://$PROJECT_DIR$/src/same_type_edge_list.py" />
     <entry file="file://$PROJECT_DIR$/src/temporal_jaccard_edge_list.py" />
-    <entry file="file://$PROJECT_DIR$/test/change_type.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -409,21 +412,12 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/links_edge_list_with_nil.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/extract_events.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1035">
           <caret line="76" column="78" selection-start-line="76" selection-start-column="78" selection-end-line="76" selection-end-column="78" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -431,23 +425,25 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
           <caret line="40" column="33" selection-start-line="40" selection-start-column="33" selection-end-line="40" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/event_extraction.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/test/prepare_for_bigclam.py">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/event_baseline2_store.py" />
+    <entry file="file://$PROJECT_DIR$/test/from_jsonhead2cluster.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/from_AIF_to_JSON_head.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -456,35 +452,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/from_jsonhead2cluster.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/minhash2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="122" column="21" lean-forward="true" selection-start-line="122" selection-start-column="21" selection-end-line="122" selection-end-column="21" />
+        <state relative-caret-position="570">
+          <caret line="42" column="35" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
           <folding>
             <element signature="e#56#69#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/extract_event_cluster.py">
+    <entry file="file://$PROJECT_DIR$/test/change_type.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/baseline2.exe.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="751">
-          <caret line="62" column="93" selection-start-line="62" selection-start-column="93" selection-end-line="62" selection-end-column="93" />
-          <folding>
-            <element signature="e#0#34#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="90">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="89" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/test/baseline1_exe.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -493,24 +479,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/event_baseline2_store.py">
+    <entry file="file://$PROJECT_DIR$/test/extract_event_cluster.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1305">
-          <caret line="95" column="33" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/baseline2.exe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="773">
+          <caret line="62" column="93" selection-start-line="62" selection-start-column="93" selection-end-line="62" selection-end-column="93" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/event_baseline2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="43" column="24" lean-forward="true" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+        <state relative-caret-position="1410">
+          <caret line="94" lean-forward="true" selection-start-line="94" selection-end-line="94" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
