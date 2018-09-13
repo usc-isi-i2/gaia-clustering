@@ -20,13 +20,18 @@ def main(argv):
 
     event_baseline_linking(inputfile, outputfile)
 
+def jaccard_similarity(list1, list2):
+    intersection = len((set(list1).intersection(set(list2))))
+    union = (len(list1) + len(list2)) - intersection
+    if union == 0:
+        return 0
+    return float(intersection / union)
 
 def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
 
     events = json.load(open(path_to_events))
 
     IDs = list(events.keys())
-
     G = nx.Graph()
     G.add_nodes_from(IDs)
     for i, id1 in enumerate(IDs):
@@ -34,23 +39,15 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
             id2 = IDs[j]
             if events[id1]['type'] == events[id2]['type']:
                 common = 0
-                for t in ENTITY_TYPE_STR:
-                    set_1 = set()
-                    set_2 = set()
-                    for ent in events[id1].get(t, list()):
-                        if isinstance(ent, list):
-                            set_1.add(entity2cluster[ent[0]])
-                        else:
-                            set_1.add(entity2cluster[ent])
-                    for ent in events[id2].get(t, list()):
-                        if isinstance(ent, list):
-                            set_2.add(entity2cluster[ent[0]])
-                        else:
-                            set_2.add(entity2cluster[ent])
-                    if len(set_1.intersection(set_2)) > 0:
-                        common += 1
-                if common > 1:
-                    G.add_edge(id1, id2)
+                all_entity_1 = set()
+                all_entity_2 = set()
+                for ii in ENTITY_TYPE_STR:
+                    for x in events[id1][ii]:
+                        all_entity_1.add(entity2cluster[x[0]])
+                    for x in events[id2][ii]:
+                        all_entity_2.add(entity2cluster[x[0]])
+                        if jaccard_similarity(all_entity_1,all_entity_2)>=0.1:
+                            G.add_edge(id1, id2)
     print('Graph construction done!')
 
     cc = nx.connected_components(G)
@@ -63,8 +60,6 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
             output.write("\n")
 
 
-if __name__ == '__main__':
-    main(sys.argv[1:])
 
 
 def get_resolved_entity(edgelist, path_to_cluster_heads, path_to_new_cluster_head):
