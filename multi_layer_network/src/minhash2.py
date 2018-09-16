@@ -104,9 +104,12 @@ def get_links_edge_list(cluster_heads):
                         if "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2] and cluster_heads[id1][1] == cluster_heads[id2][1]:
                             name1 = cluster_heads[id1][0]
                             name2 = cluster_heads[id2][0]
-                            score = jf.jaro_distance(name1, name2)
-                            if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(name1.lower()) or d.check(name2.lower())):
-                                continue
+                            if not name1 or not name2:
+                                score = 0
+                            else:
+                                score = jf.jaro_distance(name1, name2)
+                                if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(name1.lower()) or d.check(name2.lower())):
+                                    continue
                             if score > 0.9:
                                 G.add_edge(id1, id2)
         print(sum)
@@ -129,10 +132,13 @@ def get_links_edge_list(cluster_heads):
 
                         name1 = cluster_heads[id1][0]
                         name2 = cluster_heads[id2][0]
-                        score = jf.jaro_distance(name1, name2)
-                        if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(
-                                name1.lower()) or d.check(name2.lower())):
-                            continue
+                        if not name1 or not name2:
+                            score = 0
+                        else:
+                            score = jf.jaro_distance(name1, name2)
+                            if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(
+                                    name1.lower()) or d.check(name2.lower())):
+                                continue
                         if score > 0.9:
                             G.add_edge(id1, id2)
     return G
