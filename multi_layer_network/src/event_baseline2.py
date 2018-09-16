@@ -2,8 +2,7 @@ import sys
 import json
 import getopt
 import networkx as nx
-from ast import literal_eval
-from src.gaia_namespace import ENTITY_TYPE_STR
+from namespaces import ENTITY_TYPE_STR
 
 def main(argv):
     opts, _ = getopt.getopt(argv, "hi:o:", ["ifile=", "ofile="])
@@ -27,9 +26,8 @@ def jaccard_similarity(list1, list2):
         return 0
     return float(intersection / union)
 
-def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
 
-    events = json.load(open(path_to_events))
+def event_baseline_linking(events, entity2cluster):
 
     IDs = list(events.keys())
     G = nx.Graph()
@@ -52,29 +50,14 @@ def event_baseline_linking(path_to_events, path_to_output,entity2cluster):
 
     cc = nx.connected_components(G)
 
-    with open(path_to_output, 'w') as output:
-        for c in cc:
-            answer = dict()
-            answer['events'] = list(c)
-            json.dump(answer, output)
-            output.write("\n")
+    ret = [{'events': list(c)} for c in cc]
+    return ret
 
 
-
-
-def get_resolved_entity(edgelist, path_to_cluster_heads, path_to_new_cluster_head):
+def get_resolved_entity(G, cluster_heads):
     entity2clusters = {}
-    G = nx.Graph()
-
-    with open(edgelist) as edges:
-        G.add_nodes_from(literal_eval(edges.readline()))
-        for edge in edges:
-            edge_nodes = literal_eval(edge)
-            G.add_edge(edge_nodes[0], edge_nodes[1])
-
     cc = nx.connected_components(G)
     assigned_ent = 1
-    cluster_heads = json.load(open(path_to_cluster_heads))
 
     for c in cc:
         for e in c:
@@ -82,6 +65,4 @@ def get_resolved_entity(edgelist, path_to_cluster_heads, path_to_new_cluster_hea
             cluster_heads[e].append("cluster_id_" + str(assigned_ent))
         assigned_ent += 1
 
-    with open(path_to_new_cluster_head, 'w') as output:
-        json.dump(cluster_heads, output)
     return entity2clusters
