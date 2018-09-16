@@ -1,8 +1,16 @@
-from rdflib.namespace import Namespace
+from rdflib.namespace import Namespace, RDF, XSD
 
 AidaDomainOntologiesCommon = Namespace('https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/AidaDomainOntologiesCommon#')
 AidaSeedling = Namespace('https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/SeedlingOntology#')
 AidaInterchange = Namespace('https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#')
+
+namespaces = {
+    'aida': Namespace('https://tac.nist.gov/tracks/SM-KBP/2018/ontologies/InterchangeOntology#'),
+    'rdf': RDF,
+    'xij': Namespace('http://isi.edu/xij-rule-set#'),
+    'skos': Namespace('http://www.w3.org/2004/02/skos/core#'),
+    'xsd': XSD
+}
 
 ENTITY_TYPE = [
     AidaSeedling.Facility,
