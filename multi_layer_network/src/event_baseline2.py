@@ -27,7 +27,7 @@ def jaccard_similarity(list1, list2):
     return float(intersection / union)
 
 
-def event_baseline_linking(events, entity2cluster):
+def event_baseline_linking(events, entity2cluster, stat_output=None):
 
     IDs = list(events.keys())
     G = nx.Graph()
@@ -37,6 +37,8 @@ def event_baseline_linking(events, entity2cluster):
             id2 = IDs[j]
             if events[id1]['type'] == events[id2]['type']:
                 common = 0
+#                 What is this ? :
+#                             set_1.add(entity2cluster[ent])
                 all_entity_1 = set()
                 all_entity_2 = set()
                 for ii in ENTITY_TYPE_STR:
@@ -49,6 +51,38 @@ def event_baseline_linking(events, entity2cluster):
     print('Graph construction done!')
 
     cc = nx.connected_components(G)
+
+
+#     with open(path_to_output, 'w') as output:
+#         for c in cc:
+#             answer = dict()
+#             answer['events'] = list(c)
+#             json.dump(answer, output)
+#             output.write("\n")
+#     cc = nx.connected_components(G)
+    if stat_output:
+        stat = {}
+        size = {}
+        with open(path_to_output+"des", 'w') as output2:
+            for c in cc:
+                if len(c) not in size:
+                    size[len(c)] = 0
+                size[len(c)] +=1
+                check = True
+                if len(c) == 1:
+                    continue
+                for i in c:
+                    if check:
+                        type = str(events[i]["type"])
+                        if type not in stat:
+                            stat[type] = 0
+                        stat[type] +=1
+                        check = False
+                    output2.write(i+":")
+                    output2.write(str(events[i]))
+                    output2.write("\n")
+                    output2.write("\n")
+                output2.write("\n\n\n\n")
 
     ret = [{'events': list(c)} for c in cc]
     return ret
