@@ -27,11 +27,8 @@ def getminHash(word, seed):
     return len(word_dict)
 
 
-def get_blocking(path_to_cluster_heads, seed1, seed2, transDict, bn_prefix):
+def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
     blocks = {}
-
-    cluster_heads = json.load(open(path_to_cluster_heads))
-    IDs = list(cluster_heads.keys())
     print(len(IDs))
     count = 0
     for id1 in IDs:
@@ -46,10 +43,8 @@ def get_blocking(path_to_cluster_heads, seed1, seed2, transDict, bn_prefix):
     return blocks
 
 
-def get_blocking_prefix(path_to_cluster_heads, transDict):
+def get_blocking_prefix(cluster_heads, IDs, transDict):
     blocks = {}
-    cluster_heads = json.load(open(path_to_cluster_heads))
-    IDs = list(cluster_heads.keys())
     for id1 in IDs:
         word = cluster_heads[id1][0]
         can = word.split(" ")
@@ -61,10 +56,8 @@ def get_blocking_prefix(path_to_cluster_heads, transDict):
     return blocks
 
 
-def same_index(path_to_cluster_heads):
+def same_index(cluster_heads, IDs):
     blocks = {}
-    cluster_heads = json.load(open(path_to_cluster_heads))
-    IDs = list(cluster_heads.keys())
     for id1 in IDs:
         inx = cluster_heads[id1][2] + cluster_heads[id1][1]
         if "NIL" in inx:
@@ -75,15 +68,14 @@ def same_index(path_to_cluster_heads):
     return blocks
 
 
-def get_links_edge_list(path_to_cluster_heads, path_to_output):
+def get_links_edge_list(cluster_heads):
     transDict = {}
-    cluster_heads = json.load(open(path_to_cluster_heads))
     set_adding = set()
     IDs = list(cluster_heads.keys())
 
     G = nx.Graph()
     G.add_nodes_from(IDs)
-    sid = same_index(path_to_cluster_heads)
+    sid = same_index(cluster_heads, IDs)
     add = 0
     for id in sid:
         if id == '':
@@ -92,7 +84,7 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
             G.add_edge(sid[id][i], sid[id][i + 1])
 
     for ii in range(1, 3):
-        block1 = get_blocking(path_to_cluster_heads, ii, ii * 19, transDict, "first")
+        block1 = get_blocking(cluster_heads, IDs, ii, ii * 19, transDict, "first")
         print("phase1_" + str(ii))
         count = 0
         print(len(block1))
@@ -100,7 +92,7 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
         for block in block1:
             sum += len(block1[block]) * (len(block1[block]) - 1) / 2
             count += 1
-            if count % 5 == 0:
+            if count % 500 == 0:
                 print(count)
             for i, id1 in enumerate(block1[block]):
                 if len(block1[block]) > 10000:
@@ -112,20 +104,23 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
                         if "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2] and cluster_heads[id1][1] == cluster_heads[id2][1]:
                             name1 = cluster_heads[id1][0]
                             name2 = cluster_heads[id2][0]
-                            score = jf.jaro_distance(name1, name2)
-                            if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(name1.lower()) or d.check(name2.lower())):
-                                continue
+                            if not name1 or not name2:
+                                score = 0
+                            else:
+                                score = jf.jaro_distance(name1, name2)
+                                if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(name1.lower()) or d.check(name2.lower())):
+                                    continue
                             if score > 0.9:
                                 G.add_edge(id1, id2)
         print(sum)
-    block1 = get_blocking_prefix(path_to_cluster_heads, transDict)
+    block1 = get_blocking_prefix(cluster_heads, IDs, transDict)
     count = 0
     print(len(block1))
     sum = 0
     for block in block1:
         sum += len(block1[block]) * (len(block1[block]) - 1) / 2
         count += 1
-        if count % 5 == 0:
+        if count % 500 == 0:
             print(count)
         for i, id1 in enumerate(block1[block]):
             for j in range(i + 1, len(block1[block])):
@@ -137,14 +132,14 @@ def get_links_edge_list(path_to_cluster_heads, path_to_output):
 
                         name1 = cluster_heads[id1][0]
                         name2 = cluster_heads[id2][0]
-                        score = jf.jaro_distance(name1, name2)
-                        if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(
-                                name1.lower()) or d.check(name2.lower())):
-                            continue
+                        if not name1 or not name2:
+                            score = 0
+                        else:
+                            score = jf.jaro_distance(name1, name2)
+                            if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0] or d.check(
+                                    name1.lower()) or d.check(name2.lower())):
+                                continue
                         if score > 0.9:
                             G.add_edge(id1, id2)
+    return G
 
-    with open(path_to_output, 'w') as output:
-        output.write(str(G.nodes()) + '\n')
-        for e in G.edges:
-            output.write(str(e) + '\n')
