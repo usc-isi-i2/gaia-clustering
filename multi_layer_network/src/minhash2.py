@@ -39,7 +39,7 @@ def get_blocking(path_to_cluster_heads, seed1, seed2, transDict, bn_prefix):
         if count % 10000 == 0:
             print(count * 1.0 / len(IDs))
         word = cluster_heads[id1][0]
-        block_name = bn_prefix + str(getminHash(word, seed1) * 100 + getminHash(word, seed2) * 1)
+        block_name = bn_prefix + str(getminHash(word, seed1) * 100 + getminHash(word, seed2) * 1 + getminHash(word,20*seed1-17) * 10000)
         if block_name not in blocks:
             blocks[block_name] = []
         blocks[block_name].append(id1)
@@ -54,7 +54,7 @@ def get_blocking_prefix(path_to_cluster_heads, transDict):
         word = cluster_heads[id1][0]
         can = word.split(" ")
         for i in can:
-            block_name = i.lower()[:2]
+            block_name = i.lower()[:3]
             if block_name not in blocks:
                 blocks[block_name] = []
             blocks[block_name].append(id1)
