@@ -7,13 +7,11 @@ The codes contains two folder
 
 Order of running:
 - Entitiy: 
-  1. from_AIF_to_JSON_head.py 
-  2. from_jsonhead2cluster.py
+  1. test/run_entity.py
 - Event: 
-  1. extract_event_cluster.py 
-  2. baseline2.exe.py
+  1. test/run_event.py
 
-If uri is changed, please modify
-- /src/change_type_for_multi_file.py 
-- /test/from_AIF_to_JSON_head.py 
-- /src/event_baseline2.py 
+If the ontology is changed, please modify
+- /src/namespaces.py
+
+**especially when more types appear**
