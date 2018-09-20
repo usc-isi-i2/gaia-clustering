@@ -32,13 +32,13 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
     blocks = {}
     print(len(IDs))
     count = 0
+    name_set = set()
     for id1 in IDs:
         count += 1
-        if count % 10000 == 0:
-            print(count * 1.0 / len(IDs))
         word = cluster_heads[id1][0]
-        if word in map(int, range(1000)):
+        if word in map(str, range(10000)) or word in name_set:
             continue
+        name_set.add(word)
         block_name = bn_prefix + str(getminHash(word, seed1) * 100 + getminHash(word, seed2) * 1+10000*getminHash(word, seed1+6*seed2))
         if block_name not in blocks:
             blocks[block_name] = []
@@ -48,17 +48,23 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
 
 def get_blocking_prefix(cluster_heads, IDs, transDict):
     blocks = {}
+    name_dict = {}
     for id1 in IDs:
         word = cluster_heads[id1][0]
+        if word in map(str, range(10000)):
+            continue
+        if word+cluster_heads[id1][1] not in name_dict:
+            name_dict[word+cluster_heads[id1][1]] = [id1]
+        else:
+            name_dict[word+cluster_heads[id1][1]].append(id1)
+            continue
         can = word.split(" ")
         for i in can:
-            if word in map(int, range(1000)):
-                continue
             block_name = i.lower()[:3]
             if block_name not in blocks:
                 blocks[block_name] = []
             blocks[block_name].append(id1)
-    return blocks
+    return blocks,name_dict
 
 def linking_with_prototype(prototype_dict,idx_dict):
     prototype_add_list = {}
@@ -69,7 +75,6 @@ def linking_with_prototype(prototype_dict,idx_dict):
 
 def same_index(cluster_heads, IDs):
     blocks = {}
-    #blocks2 = {}
     for id1 in IDs:
         inx = cluster_heads[id1][2] + cluster_heads[id1][1]
         if "NIL" in inx:
@@ -77,12 +82,8 @@ def same_index(cluster_heads, IDs):
 
         if inx not in blocks:
             blocks[inx] = []
-        #if cluster_heads[id1][1] not in blocks2:
-        #    blocks2[cluster_heads[id1][1]] = []
-
-        #blocks2[cluster_heads[id1][1]].append(id1)
         blocks[inx].append(id1)
-    return blocks#,blocks2
+    return blocks
 
 
 def get_links_edge_list(cluster_heads):
@@ -130,7 +131,14 @@ def get_links_edge_list(cluster_heads):
                                 G.add_edge(id1, id2)
         print(sum)
     
-    block1 = get_blocking_prefix(cluster_heads, IDs, transDict)
+    block1,name_dict = get_blocking_prefix(cluster_heads, IDs, transDict)
+
+    for name in name_dict:
+        if name == '':
+            continue
+        for i in range(len(name_dict[name]) - 1):
+            G.add_edge(name_dict[name][i], name_dict[name][i + 1])
+
     count = 0
     print(len(block1))
     sum = 0

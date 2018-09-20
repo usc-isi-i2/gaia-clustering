@@ -39,14 +39,14 @@ def run(cluster_heads,cluster_file, outputs_prefix):
             answer = dict()
             answer['entities'] = list(c)
             ret.append(answer)
-            json.dump(answer, output)
+            json.dump(answer, output, indent=4, ensure_ascii=False)
             output.write('\n')
     cc = nx.connected_components(G)
     with open(output_file_with_attr, 'w') as output:
         for c in cc:
             answer = dict()
             answer['entities'] = [cluster_heads[x] for x in c]
-            json.dump(answer, output)
+            json.dump(answer, output, indent=4, ensure_ascii=False)
             output.write('\n')
 
 
