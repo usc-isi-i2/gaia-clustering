@@ -14,7 +14,7 @@ def read_cluster_prototype_file(file_dir):
         cluster_to_entity = {}
         cluster_to_prototype  = {}
         for i in cluster_file:
-            cluster_to_entity[i] = cluster_file[i]
+            cluster_to_entity[i] = cluster_file[i][0]
             #cluster_to_prototype[i] = cluster_file[i][0]+cluster_file[i][1]
     return cluster_to_entity
 
@@ -63,7 +63,7 @@ def dump_edgelist_to_file(G, outputs_prefix):
             f.write(str(e) + '\n')
 
 
-def run_with_file_io(input_json_head, file2, outputs_prefix):
+def run_with_file_io(input_json_head, input_cluster_file, outputs_prefix):
     '''
 
     :param input_json_head: the json file path of the entity json heads
@@ -72,7 +72,7 @@ def run_with_file_io(input_json_head, file2, outputs_prefix):
     '''
     with open(input_json_head) as f:
         cluster_heads = json.load(f)
-    jl, edgelist = run(cluster_heads,file2, outputs_prefix)
+    jl, edgelist = run(cluster_heads,input_cluster_file, outputs_prefix)
     dump_edgelist_to_file(edgelist, outputs_prefix)
     return jl
 

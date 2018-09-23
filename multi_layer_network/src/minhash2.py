@@ -34,9 +34,13 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
     count = 0
     name_set = set()
     for id1 in IDs:
-        count += 1
+        if count %100000 == 0:
+            print(count)
+        count+=1
         word = cluster_heads[id1][0]
-        if word in map(str, range(10000)) or word in name_set:
+        if word == "":
+            continue
+        if word in map(str, range(3000)) or word in name_set:
             continue
         name_set.add(word)
         block_name = bn_prefix + str(getminHash(word, seed1) * 100 + getminHash(word, seed2) * 1+10000*getminHash(word, seed1+6*seed2))
@@ -49,9 +53,15 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
 def get_blocking_prefix(cluster_heads, IDs, transDict):
     blocks = {}
     name_dict = {}
+    count = 0
     for id1 in IDs:
+        if count %100000 == 0:
+            print(count)
+        count+=1
         word = cluster_heads[id1][0]
-        if word in map(str, range(10000)):
+        if  word == "":
+            continue
+        if word in map(str, range(3000)):
             continue
         if word+cluster_heads[id1][1] not in name_dict:
             name_dict[word+cluster_heads[id1][1]] = [id1]
@@ -76,6 +86,8 @@ def linking_with_prototype(prototype_dict,idx_dict):
 def same_index(cluster_heads, IDs):
     blocks = {}
     for id1 in IDs:
+        if cluster_heads[id1][2] == "":
+            continue
         inx = cluster_heads[id1][2] + cluster_heads[id1][1]
         if "NIL" in inx:
             continue
