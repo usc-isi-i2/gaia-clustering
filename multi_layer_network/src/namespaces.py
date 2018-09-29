@@ -36,4 +36,11 @@ ENTITY_TYPE = [
     AidaSeedling.Vehicle
 ]
 
+COMMON_TYPE = [
+    AidaSeedling.Weapon,
+    AidaSeedling.Vehicle
+]
+
 ENTITY_TYPE_STR = [t.toPython() for t in ENTITY_TYPE]
+COMMON_TYPE_STR = [t.toPython() for t in COMMON_TYPE]
+

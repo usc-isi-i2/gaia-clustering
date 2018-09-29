@@ -6,15 +6,22 @@ import networkx as nx
 import json
 # from ast import literal_eval
 import time
+from multi_layer_network.src.namespaces import ENTITY_TYPE_STR
 
 
-def read_cluster_prototype_file(file_dir):
+def read_cluster_prototype_file(file_dir,cluster_head):
     if isinstance(file_dir, str):
         cluster_file = json.load(open(file_dir))
         cluster_to_entity = {}
-        cluster_to_prototype  = {}
         for i in cluster_file:
-            cluster_to_entity[i] = cluster_file[i][0]
+            candidate = cluster_file[i][0]+cluster_file[i][1]
+            type_set = set()
+            for j in candidate:
+                type_set.add(cluster_head[j][1])
+            if len(type_set)!=1 or list(type_set)[0] not in ENTITY_TYPE_STR:
+                continue
+            cluster_to_entity[i] = cluster_file[i][0]+cluster_file[i][1]
+
             #cluster_to_prototype[i] = cluster_file[i][0]+cluster_file[i][1]
     return cluster_to_entity
 
@@ -22,7 +29,7 @@ def read_cluster_prototype_file(file_dir):
 def run(cluster_heads,cluster_file, outputs_prefix):
     if isinstance(cluster_heads, str):
         cluster_heads = json.load(open(cluster_heads))
-    cluster2entity = read_cluster_prototype_file(cluster_file)
+    cluster2entity = read_cluster_prototype_file(cluster_file,cluster_heads)
     start = time.clock()
 
     # outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (sys.argv[1].rstrip('/') + '/')
@@ -65,7 +72,6 @@ def dump_edgelist_to_file(G, outputs_prefix):
 
 def run_with_file_io(input_json_head, input_cluster_file, outputs_prefix):
     '''
-
     :param input_json_head: the json file path of the entity json heads
     :param outputs_prefix: the directory(folder) to put output jl file and the entity edgelist file
     :return: enity cluster jl

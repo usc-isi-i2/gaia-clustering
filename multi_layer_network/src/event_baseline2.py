@@ -52,33 +52,6 @@ def event_baseline_linking(events, entity2cluster, stat_output=None, path_output
                     #         if jaccard_similarity(all_entity_1,all_entity_2)>=0.1:
                     #             G.add_edge(id1, id2)
     print('Graph construction done!')
-
-
-
-    if stat_output:
-        cc = nx.connected_components(G)
-        stat = {}
-        size = {}
-        with open(path_output, 'w') as output2:
-            for c in cc:
-                if len(c) not in size:
-                    size[len(c)] = 0
-                size[len(c)] +=1
-                check = True
-                if len(c) == 1:
-                    continue
-                for i in c:
-                    if check:
-                        type = str(events[i]["type"])
-                        if type not in stat:
-                            stat[type] = 0
-                        stat[type] +=1
-                        check = False
-                    output2.write(i+":")
-                    output2.write(str(events[i]))
-                    output2.write("\n")
-                    output2.write("\n")
-                output2.write("\n\n\n\n")
                 
     cc = nx.connected_components(G)
     ret = [{'events': list(c)} for c in cc]
