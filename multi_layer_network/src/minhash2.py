@@ -6,6 +6,7 @@ import jellyfish as jf
 from src.namespaces import ENTITY_TYPE_STR, REAL_ENTTYPE_STR
 from src.namespaces import COMMON_TYPE_STR
 
+import re
 
 def getminHash(word, seed):
     '''
@@ -174,8 +175,8 @@ def get_links_edge_list(cluster_heads):
             if "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2] and cluster_heads[id1][1] == \
                     cluster_heads[id2][1]:
 
-                name1 = cluster_heads[id1][0]
-                name2 = cluster_heads[id2][0]
+                name1 = clean_name(cluster_heads[id1][0])
+                name2 = clean_name(cluster_heads[id2][0])
 
                 if not name1 or not name2:
                     score = 0
@@ -233,4 +234,9 @@ def add_edges_via_cluster(cluster_dict, G):
             if idx != len(element_list)-1:
                 G.add_edge(i, element_list[idx+1])
     return G
+
+
+def clean_name(name):
+    return re.sub(r'\(.+\)', "", name)
+
 
