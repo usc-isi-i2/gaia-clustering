@@ -5,7 +5,6 @@ import networkx as nx
 from src.namespaces import ENTITY_TYPE_STR
 
 
-
 def jaccard_similarity(list1, list2):
     intersection = len((set(list1).intersection(set(list2))))
     union = (len(list1) + len(list2)) - intersection
@@ -14,9 +13,7 @@ def jaccard_similarity(list1, list2):
     return float(intersection / union)
 
 
-
 def event_baseline_linking(events, entity2cluster, stat_output=None, path_output = None):
-
     IDs = list(events.keys())
     type_event_map = {}
     for i in IDs:

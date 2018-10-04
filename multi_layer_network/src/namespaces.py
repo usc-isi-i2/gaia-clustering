@@ -41,6 +41,15 @@ COMMON_TYPE = [
     AidaSeedling.Vehicle
 ]
 
+REAL_ENTTYPE = [
+    AidaSeedling.Facility,
+    AidaSeedling.GeopoliticalEntity,
+    AidaSeedling.Location,
+    AidaSeedling.Organization,
+    AidaSeedling.Person
+]
+
 ENTITY_TYPE_STR = [t.toPython() for t in ENTITY_TYPE]
 COMMON_TYPE_STR = [t.toPython() for t in COMMON_TYPE]
 
+REAL_ENTTYPE_STR = [t.toPython() for t in REAL_ENTTYPE]

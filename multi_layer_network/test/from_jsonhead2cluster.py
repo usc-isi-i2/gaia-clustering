@@ -9,7 +9,7 @@ import time
 from multi_layer_network.src.namespaces import ENTITY_TYPE_STR
 
 
-def read_cluster_prototype_file(file_dir,cluster_head):
+def read_cluster_prototype_file(file_dir, cluster_head):
     if isinstance(file_dir, str):
         cluster_file = json.load(open(file_dir))
         cluster_to_entity = {}
@@ -26,7 +26,7 @@ def read_cluster_prototype_file(file_dir,cluster_head):
     return cluster_to_entity
 
 
-def run(cluster_heads,cluster_file, outputs_prefix):
+def run(cluster_heads, cluster_file, outputs_prefix):
     if isinstance(cluster_heads, str):
         cluster_heads = json.load(open(cluster_heads))
     cluster2entity = read_cluster_prototype_file(cluster_file,cluster_heads)

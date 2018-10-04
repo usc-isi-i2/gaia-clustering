@@ -3,11 +3,8 @@ import random
 import json
 import networkx as nx
 import jellyfish as jf
-import enchant
-from src.namespaces import ENTITY_TYPE_STR
+from src.namespaces import ENTITY_TYPE_STR, REAL_ENTTYPE_STR
 from src.namespaces import COMMON_TYPE_STR
-d = enchant.Dict("en_US")
-
 
 
 def getminHash(word, seed):
@@ -50,7 +47,7 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
     for id1 in IDs:
         if count %100000 == 0:
             print(count)
-        count+=1
+        count += 1
         word = cluster_heads[id1][0]
         type = cluster_heads[id1][1]
         #we only deal with a certain type
@@ -59,13 +56,11 @@ def get_blocking(cluster_heads, IDs, seed1, seed2, transDict, bn_prefix):
         # we only deal with a certain type
         if word == "":
             continue
-        if word[0] == '[':
-            word = split_col(word)
+        if word[0] == '{':
+            word = json.loads(word).get('translation', [''])[0]
         if word in map(str, range(3000)) or word in name_set:
             continue
-        #filter the word in the dict
-        if d.check(word) and word[0].islower():
-            continue
+
         name_set.add(word)
 
         #three layer min hashing
@@ -91,16 +86,14 @@ def get_blocking_prefix(cluster_heads, IDs, transDict):
             print(count)
         count+=1
         word = cluster_heads[id1][0]
-        if  word == "":
+        if word == "":
             continue
-        if word[0] == '[':
-            word = split_col(word)
+        if word[0] == '{':
+            word = json.loads(word).get('translation', [''])[0]
         type = cluster_heads[id1][1]
         if type not in ENTITY_TYPE_STR:
             continue
         if word in map(str, range(3000)):
-            continue
-        if d.check(word) and word[0].islower():
             continue
         if word+cluster_heads[id1][1] not in name_dict:
             name_dict[word+cluster_heads[id1][1]] = [id1]
@@ -115,7 +108,8 @@ def get_blocking_prefix(cluster_heads, IDs, transDict):
             blocks[block_name].append(id1)
     return blocks,name_dict
 
-def linking_with_prototype(prototype_dict,idx_dict):
+
+def linking_with_prototype(prototype_dict, idx_dict):
     '''
     :param prototype_dict:
     :param idx_dict:
@@ -123,16 +117,10 @@ def linking_with_prototype(prototype_dict,idx_dict):
     '''
     prototype_add_list = {}
     for i in prototype_dict:
-        list_temp = map(lambda x:idx_dict[x][0],prototype_dict[i])
+        list_temp = map(lambda x: idx_dict[x][0], prototype_dict[i])
         prototype_add_list[i] = list_temp
     return prototype_add_list
-def split_col(word):
-    word = word.replace("[","")
-    word = word.replace("]", "")
-    word = word.replace('\"',"")
-    word = word.replace('"', "")
-    word = word.split(',')[0]
-    return word
+
 
 def same_index(cluster_heads, IDs):
     '''
@@ -149,11 +137,6 @@ def same_index(cluster_heads, IDs):
             continue
         word = cluster_heads[id1][0]
         if word == "":
-            continue
-        if word[0] == '[':
-            word = split_col(word)
-
-        if word and d.check(word) and word[0].islower():
             continue
         inx = cluster_heads[id1][2] + cluster_heads[id1][1]
         if "NIL" in inx:
@@ -179,20 +162,25 @@ def get_links_edge_list(cluster_heads):
         for i in range(len(sid[id]) - 1):
             G.add_edge(sid[id][i], sid[id][i + 1])
 
-    def compare(id1,id2):
+    def compare(id1, id2):
         if cluster_heads[id1][1] == cluster_heads[id2][1] and (
                 cluster_heads[id1][2] != cluster_heads[id2][2] or "NIL" in cluster_heads[id1][2] or "NIL" in
                 cluster_heads[id2][2]):
+
+            # ignore filter type:
+            if cluster_heads[id1][1] not in set(REAL_ENTTYPE_STR):
+                return
+
             if "NIL" in cluster_heads[id1][2] or "NIL" in cluster_heads[id2][2] and cluster_heads[id1][1] == \
                     cluster_heads[id2][1]:
+
                 name1 = cluster_heads[id1][0]
                 name2 = cluster_heads[id2][0]
+
                 if not name1 or not name2:
                     score = 0
                 else:
                     score = jf.jaro_distance(name1, name2)
-                    # if (name1[0].upper() != name1[0] or name2[0].upper() != name2[0]):# or d.check(name1.lower()) or d.check(name2.lower())):
-                    #     continue
                 if score > 0.9:
                     G.add_edge(id1, id2)
 
@@ -214,7 +202,7 @@ def get_links_edge_list(cluster_heads):
                     compare(id1,id2)
         print(sum)
 
-    block1,name_dict = get_blocking_prefix(cluster_heads, IDs, transDict)
+    block1, name_dict = get_blocking_prefix(cluster_heads, IDs, transDict)
 
     for name in name_dict:
         if name == '':
@@ -242,8 +230,7 @@ def add_edges_via_cluster(cluster_dict, G):
     for clu in cluster_dict:
         element_list = cluster_dict[clu]
         for idx, i in enumerate(element_list):
-            if idx!= len(element_list)-1:
-                G.add_edge(i,element_list[idx+1])
-
+            if idx != len(element_list)-1:
+                G.add_edge(i, element_list[idx+1])
     return G
 
