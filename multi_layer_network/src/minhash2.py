@@ -3,8 +3,8 @@ import random
 import json
 import networkx as nx
 import jellyfish as jf
-from src.namespaces import ENTITY_TYPE_STR, REAL_ENTTYPE_STR
-from src.namespaces import COMMON_TYPE_STR
+from multi_layer_network.src.namespaces import ENTITY_TYPE_STR, REAL_ENTTYPE_STR
+from multi_layer_network.src.namespaces import COMMON_TYPE_STR
 
 import re
 

@@ -2,7 +2,7 @@ import sys
 import json
 import getopt
 import networkx as nx
-from src.namespaces import ENTITY_TYPE_STR
+from multi_layer_network.src.namespaces import ENTITY_TYPE_STR
 
 
 def jaccard_similarity(list1, list2):

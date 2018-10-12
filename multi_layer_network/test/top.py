@@ -27,4 +27,6 @@ def get_top_n(ent_attr, n):
 
 # get_top_n("/Users/dongyuli/isi/data/jsonhead_r1aug/entity_with_attr.jl", 30)
 
-get_top_n("/Users/dongyuli/isi/data/jl_1003r1nl/entity_with_attr.jl", 30)
+# get_top_n("/Users/dongyuli/isi/jsonhead/1003r2nl/entity_with_attr.jl", 30)
+# get_top_n("/Users/dongyuli/isi/jsonhead/1003r1wl/entity_with_attr.jl", 30)
+get_top_n("/Users/dongyuli/isi/jsonhead/1003r4nl/entity_with_attr.jl", 30)
