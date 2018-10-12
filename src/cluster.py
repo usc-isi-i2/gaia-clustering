@@ -1,8 +1,8 @@
-from src.Entity import Entity
+from src.entity import Entity
 
 
 class Cluster(object):
-    def __init__(self, members: list(Entity)):
+    def __init__(self, members: list):
         self.members = {}
         self.groupby_attr = {}
         self.links = {}
@@ -67,6 +67,9 @@ class Cluster(object):
                 print('WIRED, NOT COUNT ', mem.uri)
 
         self.unique_link = self.check_unique_link()
+
+    def dump_members(self):
+        return '\n'.join(list(self.members.keys()))
 
 
 

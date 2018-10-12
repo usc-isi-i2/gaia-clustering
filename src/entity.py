@@ -1,10 +1,11 @@
 
 
 class Entity(object):
-    def __init__(self, uri, name, _type, link):
+    def __init__(self, uri, names, _type, link):
         # TODO: support more than a single name, but many text labels
         self._uri = uri
-        self._name = name
+        self._names = names
+        self._name = names[0] if names else ''
         self._type = _type
         self._link = link
 
