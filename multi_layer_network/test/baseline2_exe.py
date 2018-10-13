@@ -6,15 +6,6 @@ from ast import literal_eval
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 import multi_layer_network.src.event_baseline2 as eb2
 
-# outputs_prefix = os.path.join(os.path.dirname(__file__), '../../outputs/') if len(sys.argv) < 2 else (
-#             sys.argv[1].rstrip('/') + '/')
-#
-# outputs_prefix = '/Users/dongyuli/isi/data/rpi0907/jl/'
-#
-# edgelist = outputs_prefix + "entity.edgelist"
-# path_to_cluster_heads = outputs_prefix + "entity.json"
-# path_to_new_cluster_head = outputs_prefix + "entity2.json"
-# input_file = outputs_prefix + "event.json"
 
 
 def run(entity_edgelist, entity_heads, event_heads, outputs_prefix):
@@ -50,8 +41,10 @@ def run_with_file_io(edgelist_file, entity_head_file, event_head_file, outputs_p
     :return: event jl
     '''
     edgelist = load_edgelist_from_file(edgelist_file)
-    entity_head = json.load(open(entity_head_file))
-    event_head = json.load(open(event_head_file))
+    with open(entity_head_file) as f:
+        entity_head = json.load(f)
+    with open(event_head_file) as f:
+        event_head = json.load(f)
     event_jl = run(edgelist, entity_head, event_head, outputs_prefix)
     return event_jl
 
