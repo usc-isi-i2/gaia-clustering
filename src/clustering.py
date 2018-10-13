@@ -1,8 +1,11 @@
 import json
 from src.entity import Entity
 from src.cluster import Cluster
+
+# TODO: load mapping
 MAP_TO_FREEBASE = {}
 OTHERS = 'others'
+JARO_CACHE = {}     # {(string1, string2): distance_float} where string1 < string2
 
 
 class Clustering(object):
@@ -17,7 +20,7 @@ class Clustering(object):
         self.ta2_clusters = {}          # self.ta2_clusters:    {external_link: Cluster instance}
         self.no_link = {}               # self.no_link:         {entity_no_elink_uri: [(elinks), (ta1_cluster_uris)]}
         self.cluster_to_ent = {}        # self.cluster_to_ent:  {ta1_cluster_uri: set(entity_no_elink_uris)}
-        self.no_where_to_go = set()     # self.no_where_to_go:  (entity_uris)
+        self.no_where_to_go = []        # self.no_where_to_go:  [Cluster: merged no el ents ta1 clusters]
 
         self.init_el_based_clusters(entity_json, cluster_json)
 
@@ -43,7 +46,6 @@ class Clustering(object):
                 if link not in self.ta2_clusters:
                     self.ta2_clusters[link] = Cluster([])
                 self.ta2_clusters[link].add_member(self.entities[ent])
-                self.entities[ent].set_cluster(self.ta2_clusters[link])
             else:
                 self.no_link[ent] = [set(), set()]
 
@@ -88,55 +90,115 @@ class Clustering(object):
         :return: None
         """
         # for each entity in no_link, try to find a best place to go
-        no_where_to_go = set()
+        visited = set()
         for ent_uri, elink_ta1cluster in self.no_link.items():
             elinks, ta1s = elink_ta1cluster
             cur_ent = self.entities[ent_uri]
-            if not len(elinks):
+            if len(elinks):
+                cur_cluster = self.get_best(cur_ent, elinks)
+                cur_cluster.add_member(cur_ent)
+            else:
+                # not directly clustered with entity with elink:
                 # no elinks, try to find chained elinks, otherwise no where to go
+                if ent_uri in visited:
+                    return
+                visited_no_el_sibling_ent = {ent_uri}
                 elinks = set()
                 added = ta1s
                 to_check = list(ta1s)
+                # TODO: confidence by hops? now ents with >= 1 hop sibling with elinks are treat in the same way
                 while to_check:
                     cur_cluster = to_check.pop()
                     for sibling in self.cluster_to_ent[cur_cluster]:
                         if len(self.no_link[sibling][0]):
                             # find external links
                             elinks = elinks.union(self.no_link[sibling][0])
+                        else:
+                            visited_no_el_sibling_ent.add(ent_uri)
                         for next_hop_cluster in self.no_link[sibling][1]:
                             # add other chained clusters to check
                             if next_hop_cluster not in added:
                                 added.add(next_hop_cluster)
                                 to_check.append(next_hop_cluster)
-            if len(elinks):
-                cur_cluster = self.get_best(elinks, cur_ent)
-                cur_cluster.add_member(cur_ent)
-                cur_ent.set_cluster(cur_cluster)
-            else:
-                no_where_to_go.add(ent_uri)
+                if len(elinks):
+                    for covered_ent in visited_no_el_sibling_ent:
+                        cur_cluster = self.get_best(self.entities[covered_ent], elinks)
+                        cur_cluster.add_member(self.entities[covered_ent])
+                else:
+                    cur_cluster = Cluster([self.entities[covered_ent] for covered_ent in visited_no_el_sibling_ent])
+                    self.no_where_to_go.append(cur_cluster)
+                visited = visited.union(visited_no_el_sibling_ent)
 
-    def assign_no_where_to_go(self):
+    def assign_no_where_to_go(self, threshold: float=0.9):
         """
-        now we put all entities related to one or more external links to a ta2 cluster
-        may still have some entities is no where to go, run in Xin's algorithm
+        now we put all entities related to one or more external links to a ta2 cluster,
+        and merged the chained no-elink clusters,
+        compare each cluster to existing ta2 clusters to merge them,
+        otherwise compare each pair of clusters in self.no_where_to_go to decide if merge them
         :return: None
         """
-        for ent_uri in self.no_where_to_go:
-            # 1. merge chained clusters
-            # 2. run in Xin's connected component
-            pass
+        lefts = []
+        for i in range(len(self.no_where_to_go)):
+            # try to assign to existing ta2 cluster, no chained to avoid FPs
+            cur_i = self.no_where_to_go[i]
+            to_go = self.get_best(target=cur_i, threshold=threshold)
+            if to_go:
+                for mem in cur_i.members.values():
+                    to_go.add_member(mem)
+            else:
+                lefts.append(i)
 
-    def get_best(self, elinks: set, ent: Entity):
+        # no similar ta2 cluster to go, try to merge with others
+        edges = {}
+        for i in range(len(lefts) - 1):
+            for j in range(i + 1, len(lefts)):
+                cur_i = self.no_where_to_go[lefts[i]]
+                cur_j = self.no_where_to_go[lefts[j]]
+                if cur_i.calc_similarity(cur_j, JARO_CACHE, threshold) > threshold:
+                    if i not in edges:
+                        edges[i] = []
+                    if j not in edges:
+                        edges[j] = []
+                    edges[i].append(j)
+                    edges[j].append(i)
+
+        groups = []
+        visited = set()
+        for i in edges:
+            if i not in visited:
+                to_check = [i]
+                added = {i}
+                idx = 0
+                while idx < len(to_check):
+                    cur = to_check.pop()
+                    for j in edges[cur]:
+                        if j not in added:
+                            to_check.append(j)
+                            added.add(j)
+                visited = visited.union(added)
+                groups.append(to_check)
+
+        for i in range(len(groups)):
+            cur = Cluster([])
+            for _ in groups[i]:
+                for mem in self.no_where_to_go[lefts[_]].members.values():
+                    cur.add_member(mem)
+            self.ta2_clusters['NO_EXTERNAL_LINK_CLUSTERS_%d' % i] = cur
+
+    def get_best(self, target: Entity or Cluster, elinks: set=None, threshold: float=0) -> Cluster:
         if len(elinks) == 1:
             return self.ta2_clusters[list(elinks)[0]]
         max_simi = 0
         max_el = None
+        if not elinks:
+            elinks = self.ta2_clusters
         for el in elinks:
-            cur_simi = self.ta2_clusters[el].calc_similarity(ent)
+            cur_simi = self.ta2_clusters[el].calc_similarity(target, JARO_CACHE)
             if cur_simi > max_simi:
                 max_simi = cur_simi
                 max_el = el
-        return self.ta2_clusters[max_el]
+        if max_simi >= threshold:
+            return self.ta2_clusters[max_el]
 
     def dump_ta2_cluster(self):
         res = []
