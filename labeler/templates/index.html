@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+      .record-button {
+        white-space: normal;
+        text-align: left;
+      }
+      .action-button {
+        width: 150pt;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- nav -->
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom">
+      <nav class="navbar">
+        <span class="navbar-brand mb-0 h1">{{ title }}</span>
+      </nav>
+    </div>
+
+    <!-- content -->
+    <div class="row m-5">
+      <div class="col-5">
+
+        <ul id="accordion border-0 justify-content-end">
+        {% for m in r1.mentions %}
+          <li class="card border-0">
+            <!--abstract-->
+            <div class="card-header border-0 bg-white" id="heading-r1-{{loop.index}}">
+              <h5 class="mb-0">
+                <button class="btn bg-white record-button" data-toggle="collapse" data-target="#collapse-r1-{{loop.index}}" aria-expanded="true" aria-controls="collapse-r1-{{loop.index}}">
+                  {{ m.context_short|safe }}
+                </button>
+              </h5>
+            </div>
+            <!--details-->
+            <div id="collapse-r1-{{loop.index}}" class="collapse" aria-labelledby="heading-r1-{{loop.index}}" data-parent="#accordion">
+              <div class="card-body border">
+                <ul>
+                  <li><b>ID</b>: {{ r1.id }}</li>
+                  <li><b>Source</b>: {{ r1.source }}</li>
+                  <li><b>Name</b>: {{ m.name }}</li>
+                  <li><b>Context</b>: {{ m.context|safe }}</li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+
+      </div>
+      <div class="col-5">
+
+        <ul id="accordion border-0">
+        {% for m in r2.mentions %}
+          <li class="card border-0">
+            <!--abstract-->
+            <div class="card-header border-0 bg-white" id="heading-r2-{{loop.index}}">
+              <h5 class="mb-0">
+                <button class="btn bg-white record-button" data-toggle="collapse" data-target="#collapse-r2-{{loop.index}}" aria-expanded="true" aria-controls="collapse-r2-{{loop.index}}">
+                  {{ m.context_short|safe }}
+                </button>
+              </h5>
+            </div>
+            <!--details-->
+            <div id="collapse-r2-{{loop.index}}" class="collapse" aria-labelledby="heading-r2-{{loop.index}}" data-parent="#accordion">
+              <div class="card-body border">
+                <ul>
+                  <li><b>ID</b>: {{ r2.id }}</li>
+                  <li><b>Source</b>: {{ r2.source }}</li>
+                  <li><b>Name</b>: {{ m.name }}</li>
+                  <li><b>Context</b>: {{ m.context|safe }}</li>
+                </ul>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+
+    <!-- button -->
+    <div class="row m-5">
+      <div class="col text-center">
+        <a href="/id/{{ url_id }}/label/yes" role="button" class="btn btn-success action-button mr-3">Yes</a>
+        <a href="/id/{{ url_id }}/label/no" role="button" class="btn btn-danger action-button mr-3">No</a>
+        <a href="/id/{{ url_id }}/label/not_sure" role="button" class="btn btn-warning action-button mr-3">Not sure</a>
+        <a href="/" role="button" class="btn btn-secondary action-button">Skip</a>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
